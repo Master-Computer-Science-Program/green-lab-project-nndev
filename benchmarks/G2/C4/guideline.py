@@ -9,5 +9,4 @@ class Solution:
     
 if __name__ == "__main__":
     s = Solution()
-    nums = [2,10,10,30,30,30]
-    print(s.removeDuplicates(nums))
+    print(s.removeDuplicates([2,10,10,30,30,30]))

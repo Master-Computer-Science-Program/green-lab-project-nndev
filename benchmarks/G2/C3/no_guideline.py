@@ -2,7 +2,7 @@ class Solution:
     def merge(self, nums1: list[int], m: int, nums2: list[int], n: int) -> None:
         nums1.sort()
         nums2.sort()
-        
+
         last = m + n - 1
         i, j = m - 1, n - 1
 
@@ -18,11 +18,6 @@ class Solution:
 
 if __name__ == "__main__":
     s = Solution()
-
     nums1 = [10,20,20,40,0,0]
-    m = 4
-    nums2 = [1,2]
-    n = 2
-
-    s.merge(nums1, m, nums2, n)
+    s.merge(nums1, 4, [1,2], 2)
     print(nums1)
