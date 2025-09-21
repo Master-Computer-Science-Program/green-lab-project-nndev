@@ -16,3 +16,12 @@
 **Note**: G3 has two applications
 1. (G3_1) Instead of checking i < len(arr) every time, we can save l = len(arr) and check i < l
 2. (G3_2) We can add checking condition to terminate loop
+
+## Run Code
+
+### Installation
+
+- Python version 3.11
+- Install packages: `pip3 install -r requirements.txt`
+
+### Run experiment
