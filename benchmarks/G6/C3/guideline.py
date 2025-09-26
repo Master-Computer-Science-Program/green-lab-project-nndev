@@ -1,4 +1,6 @@
 from typing import List
+import sys
+import ast
 
 class Solution:
     def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
@@ -13,4 +15,4 @@ class Solution:
         
 if __name__ == "__main__":
     s = Solution()
-    print(s.findMedianSortedArrays([1,2], [3]))
+    print(s.findMedianSortedArrays(ast.literal_eval(sys.argv[1]), ast.literal_eval(sys.argv[2])))

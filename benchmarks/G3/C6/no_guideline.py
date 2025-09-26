@@ -1,4 +1,6 @@
 from typing import List
+import sys
+import ast
 
 class Solution:
     def hasDuplicate(self, nums: List[int]) -> bool:
@@ -10,4 +12,4 @@ class Solution:
     
 if __name__ == "__main__":
     s = Solution()
-    print(s.hasDuplicate([1, 2, 3, 4]))
+    print(s.hasDuplicate(ast.literal_eval(sys.argv[1])))

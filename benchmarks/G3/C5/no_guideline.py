@@ -1,3 +1,5 @@
+import sys
+
 class Solution:
     def isAnagram(self, s: str, t: str) -> bool:
         if len(s) != len(t):
@@ -15,4 +17,4 @@ class Solution:
     
 if __name__ == "__main__":
     s = Solution()
-    print(s.isAnagram("racecar", "carrace"))
+    print(s.isAnagram(sys.argv[1], sys.argv[2]))
