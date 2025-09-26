@@ -6,6 +6,8 @@
 # modified by Maciej Fijalkowski
 # 2to3
 
+import sys
+
 def combinations(l):
     result = []
     for x in range(len(l) - 1):
@@ -112,4 +114,4 @@ def main(n, ref='sun'):
     report_energy()
 
 if __name__ == '__main__':
-    main(int(10000))
+    main(int(sys.argv[1]))

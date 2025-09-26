@@ -1,4 +1,6 @@
 from typing import List
+import sys
+import ast
 
 class Solution:
     def binary_search(self, l: int, r: int, nums: List[int], target: int) -> int:
@@ -17,4 +19,4 @@ class Solution:
     
 if __name__ == "__main__":
     s = Solution()
-    print(s.search([-1,0,2,4,6,8], 4))
+    print(s.search(ast.literal_eval(sys.argv[1]), int(sys.argv[2])))

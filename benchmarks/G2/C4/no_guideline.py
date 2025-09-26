@@ -1,3 +1,6 @@
+import sys
+import ast
+
 class Solution:
     def removeDuplicates(self, nums: list[int]) -> int:
         nums.sort()
@@ -10,4 +13,4 @@ class Solution:
     
 if __name__ == "__main__":
     s = Solution()
-    print(s.removeDuplicates([2,10,10,30,30,30]))
+    print(s.removeDuplicates(ast.literal_eval(sys.argv[1])))

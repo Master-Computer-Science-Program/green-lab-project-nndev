@@ -1,4 +1,5 @@
 from typing import Optional
+import sys
 
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
@@ -17,6 +18,6 @@ class Solution:
 
 if __name__ == "__main__":
     s = Solution()
-    node1 = TreeNode(1, TreeNode(2), TreeNode(3))
-    node2 = TreeNode(1, TreeNode(2), TreeNode(3))
+    node1 = TreeNode(int(sys.argv[1]), TreeNode(int(sys.argv[2])), TreeNode(int(sys.argv[3])))
+    node2 = TreeNode(int(sys.argv[4]), TreeNode(int(sys.argv[5])), TreeNode(int(sys.argv[6])))
     print(s.isSameTree(node1, node2))

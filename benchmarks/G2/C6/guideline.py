@@ -1,4 +1,6 @@
 from typing import List
+import sys
+import ast
 
 class Solution:
     def sortedSquares(self, nums: List[int]) -> List[int]:
@@ -16,4 +18,4 @@ class Solution:
     
 if __name__ == "__main__":
     s = Solution()
-    print(s.sortedSquares([-7,-3,2,3,11]))
+    print(s.sortedSquares(ast.literal_eval(sys.argv[1])))

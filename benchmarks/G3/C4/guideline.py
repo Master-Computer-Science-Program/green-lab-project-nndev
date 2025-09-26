@@ -1,4 +1,6 @@
 from typing import List
+import sys
+import ast
 
 class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
@@ -11,4 +13,4 @@ class Solution:
     
 if __name__ == "__main__":
     s = Solution()
-    print(s.twoSum([4,5,6], 10))
+    args = ast.literal_eval(sys.argv[1])

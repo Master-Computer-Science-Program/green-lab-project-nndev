@@ -1,3 +1,6 @@
+import sys
+import ast
+
 class Solution:
     def merge(self, nums1: list[int], m: int, nums2: list[int], n: int) -> None:
         nums1.sort()
@@ -18,6 +21,4 @@ class Solution:
 
 if __name__ == "__main__":
     s = Solution()
-    nums1 = [10,20,20,40,0,0]
-    s.merge(nums1, 4, [1,2], 2)
-    print(nums1)
+    print(s.merge(ast.literal_eval(sys.argv[1]), int(sys.argv[2]), ast.literal_eval(sys.argv[3]), int(sys.argv[4])))

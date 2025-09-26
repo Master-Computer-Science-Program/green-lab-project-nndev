@@ -7,7 +7,9 @@
 from io import StringIO
 from gmpy2 import xmpz,div,mul,add
 
-N = int(1000)
+import sys
+
+N = int(sys.argv[1])
 f = StringIO()
 
 w = xmpz(0)

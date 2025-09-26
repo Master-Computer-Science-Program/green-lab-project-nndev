@@ -6,10 +6,7 @@ Copyright (C) 2005 Carl Friedrich Bolz
 import math
 import random
 
-import pyperf
-
-from argparse import Namespace
-
+import sys
 
 DEFAULT_THICKNESS = 0.25
 DEFAULT_WIDTH = 256
@@ -243,8 +240,7 @@ class Chaosgame(object):
         if filename:
             write_ppm(im, filename)
 
-
-def main(runner, args):
+if __name__ == "__main__":
     splines = [
         Spline([
             GVector(1.597350, 3.304460, 0.000000),
@@ -269,29 +265,10 @@ def main(runner, args):
             3, [0, 0, 0, 1, 1, 1])
     ]
 
-    runner.metadata['chaos_thickness'] = args.thickness
-    runner.metadata['chaos_width'] = args.width
-    runner.metadata['chaos_height'] = args.height
-    runner.metadata['chaos_iterations'] = args.iterations
-    runner.metadata['chaos_rng_seed'] = args.rng_seed
-
-    chaos = Chaosgame(splines, args.thickness)
-    runner.bench_func('chaos', chaos.create_image_chaos,
-                        args.width, args.height, args.iterations,
-                        args.filename, args.rng_seed)
-
-
-if __name__ == "__main__":
-    runner = pyperf.Runner()
-    runner.metadata['description'] = "Create chaosgame-like fractals"
-    
-    args = Namespace(
-        thickness=0.25,
-        width=256,
-        height=256,
-        iterations=1000,
-        rng_seed=42,
-        filename=None
-    )
-    
-    main(runner, args)
+    chaos = Chaosgame(splines, sys.argv[1] if len(sys.argv) > 1 else DEFAULT_THICKNESS) # thickness
+    chaos.create_image_chaos(
+        int(sys.argv[2]) if len(sys.argv) > 2 else DEFAULT_WIDTH,
+        int(sys.argv[3]) if len(sys.argv) > 3 else DEFAULT_HEIGHT,
+        int(sys.argv[4]) if len(sys.argv) > 4 else DEFAULT_ITERATIONS,
+        sys.argv[5] if len(sys.argv) > 5 else None,
+        int(sys.argv[6]) if len(sys.argv) > 6 else DEFAULT_RNG_SEED) # rng_seed
