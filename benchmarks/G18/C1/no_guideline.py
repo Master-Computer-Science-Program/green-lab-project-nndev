@@ -1,6 +1,8 @@
 from typing import List
-import sys
-import ast
+
+import sys, os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config
 
 class Solution:
     def combinationSum4(self, nums: List[int], target: int) -> int:
@@ -21,4 +23,4 @@ class Solution:
 
 if __name__ == "__main__":
     solution = Solution()
-    print(solution.combinationSum4(ast.literal_eval(sys.argv[1]), int(sys.argv[2])))
+    print(solution.combinationSum4(config.C1_ARG[0], int(config.C1_ARG[1])))
