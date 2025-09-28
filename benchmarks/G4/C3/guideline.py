@@ -9,6 +9,9 @@ from sys import stdin
 from collections import defaultdict
 from itertools import starmap, chain
 from multiprocessing import Pool
+import sys, os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config
 
 lean_buffer = {}
 
@@ -150,7 +153,9 @@ def main():
     def display_list(k_nucleotides):
         return [(n, len(n), str_to_bits(n)) for n in k_nucleotides]
 
-    sequence = read_sequence(stdin.buffer, b'THREE', translation)
+    input_file = os.path.join(os.path.dirname(__file__), config.C3_ARG[0]) if len(config.C3_ARG) > 0 else None
+    with open(input_file, "rb") if input_file else stdin.buffer as f:
+        sequence = read_sequence(f, b'THREE', translation)
 
     mono_nucleotides = ('G', 'A', 'T', 'C')
     di_nucleotides = tuple(n + m
@@ -163,8 +168,9 @@ def main():
         (2, tuple(map(str_to_bits, di_nucleotides))),
     ] + list(map(lambda s: (len(s), (str_to_bits(s),)), k_nucleotides))
 
-    if len(sequence) > 128 * cpu_count(): n = cpu_count()
-    else: n = 1
+    # if len(sequence) > 128 * cpu_count(): n = cpu_count()
+    # else: n = 1
+    n = 1 # avoid multiprocessing errors in some environments
     partitions = [len(sequence) * i // n for i in range(n+1)]
     count_jobs = [
         (sequence, reading_frames, partitions[i], partitions[i + 1])
