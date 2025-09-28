@@ -1,0 +1,1 @@
+C3_ARG = ["test.fasta"]

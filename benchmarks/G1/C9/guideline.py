@@ -8,6 +8,9 @@ from contextlib import closing
 from itertools import islice
 from os import cpu_count
 from sys import argv, stdout
+import sys, os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config
 
 def pixels(y, n, abs):
     # changed here
@@ -73,4 +76,4 @@ def mandelbrot(n):
             write(row[1])
 
 if __name__ == '__main__':
-    mandelbrot(int(argv[1]))
+    mandelbrot(int(config.C9_ARG[0]))

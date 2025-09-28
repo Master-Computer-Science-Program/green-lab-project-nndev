@@ -6,8 +6,10 @@
 # modified by Joerg Baumann
 # Binary tree
 
-import sys
+import sys, os
 import multiprocessing as mp
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config
 
 
 def make_tree(d):
@@ -72,4 +74,4 @@ def main(n, min_depth=4):
 
 
 if __name__ == '__main__':
-    main(int(sys.argv[1]))
+    main(int(config.C7_ARG[0]))
