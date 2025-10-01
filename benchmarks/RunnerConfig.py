@@ -126,7 +126,7 @@ class RunnerConfig:
         """Perform any activity here required for stopping measurements."""
         
         # Stop the measurements
-        stdout = self.meter.stop()
+        stdout = self.meter.stop(wait=True)
 
     def stop_run(self, context: RunnerContext) -> None:
         """Perform any activity here required for stopping the run.
