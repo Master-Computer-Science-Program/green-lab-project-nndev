@@ -67,7 +67,7 @@ class RunnerConfig:
         factor2 = FactorModel("code", ['C1'])
         factor3 = FactorModel("treatment", ['guideline', 'no_guideline'])
         factor4 = FactorModel("run_number", [f'r{i}' for i in range(1, 11)])
-        
+
         self.run_table_model = RunTableModel(
             factors=[factor1, factor2, factor3, factor4],
             repetitions = 1,
@@ -103,9 +103,6 @@ class RunnerConfig:
         self.performance_profiler = subprocess.Popen(['sh', '-c', timer_cmd],
                                                      stdout=subprocess.PIPE, stderr=subprocess.PIPE
                                                      )
-
-        # Configure the environment based on the current variation
-        subprocess.check_call(f'cpulimit -p {self.target.pid} --limit {cpu_limit} &', shell=True)
         
         time.sleep(1) # allow the process to run a little before measuring
 
