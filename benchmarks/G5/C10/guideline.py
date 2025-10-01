@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import math
 import sys
+import time
 
 __version__ = "2020.9.26"
 __author__ = "xcodz-dot, cclaus, dhruvmanila"
@@ -71,4 +72,6 @@ def rotate(
 
 
 if __name__ == "__main__":
+    start = time.perf_counter()
     print(f"{rotate(float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), 'y', float(sys.argv[4])) = }")
+    print("Elapsed time: %.6f seconds" % (time.perf_counter() - start))

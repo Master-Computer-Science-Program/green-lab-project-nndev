@@ -28,7 +28,6 @@ def exp(x, k=20):
     return result ** k
 
 def gaussian(x, mu: float = 0.0, sigma: float = 1.0) -> float:
-    print(x, mu, sigma)
     return 1 / squareRoot(2 * (22 / 7) * sigma**2) * exp(-((x - mu) ** 2) / (2 * sigma**2))
 
 if __name__ == "__main__":
