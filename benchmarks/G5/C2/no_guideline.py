@@ -21,5 +21,5 @@ class Solution:
     
 if __name__ == "__main__":
     s = Solution()
-    points = [[i, i] for i in range(sys.argv[1])]
+    points = [[i, i] for i in range(int(sys.argv[1]))]
     print(s.kClosest(points, int(sys.argv[2])))
