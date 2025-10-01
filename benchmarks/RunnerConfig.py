@@ -62,9 +62,9 @@ class RunnerConfig:
         """Create and return the run_table model here. A run_table is a List (rows) of tuples (columns),
         representing each run performed"""
         # factor1 = FactorModel("guideline", ['G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G18', 'G19'])
-        factor1 = FactorModel("guideline", ['G18'])
+        factor1 = FactorModel("guideline", ['G1'])
         # factor2 = FactorModel("code", [f'C{i}' for i in range(1, 11)])
-        factor2 = FactorModel("code", ['C1'])
+        factor2 = FactorModel("code", ['C7'])
         factor3 = FactorModel("treatment", ['guideline', 'no_guideline'])
         factor4 = FactorModel("run_number", [f'r{i}' for i in range(1, 11)])
 
