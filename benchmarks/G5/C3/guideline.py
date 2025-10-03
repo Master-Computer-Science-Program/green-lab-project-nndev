@@ -1,7 +1,6 @@
 from typing import List
 from collections import defaultdict
 import sys
-import ast
 from math import atan2
 
 class Solution:
@@ -25,4 +24,5 @@ class Solution:
     
 if __name__ == "__main__":
     s = Solution()
-    print(s.maxPoints(ast.literal_eval(sys.argv[1])))
+    points = [[i, i] for i in range(int(sys.argv[1]))]
+    print(s.maxPoints(points))

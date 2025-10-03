@@ -21,7 +21,6 @@ Source : https://en.wikipedia.org/wiki/Speed_of_sound
 
 import sys
 
-
 def speed_of_sound_in_a_fluid(density: float, bulk_modulus: float) -> float:
     """
     Calculates the speed of sound in a fluid from its density and bulk modulus
