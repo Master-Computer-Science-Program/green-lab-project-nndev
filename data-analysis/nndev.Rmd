@@ -15,7 +15,7 @@ library(xtable)
 
 ### 1.1. Load data
 ```{r}
-setwd("/Users/ntd432/Desktop/SE4GD/VU/GreenLab/project/green-lab-project-nndev/data-analysis")
+# setwd("/Users/ntd432/Desktop/SE4GD/VU/GreenLab/project/green-lab-project-nndev/data-analysis")
 dat_data <- read.csv("raw-data/dummy_data.csv") %>%
   select(guideline, code, treatment, run_number, energy_usage, execution_time, cpu_usage, memory_usage) %>%
   mutate(
@@ -95,6 +95,18 @@ ggplot(dat_data, aes(x = treatment, y = energy_usage, fill=guideline)) +
 ## 2. Data Normality and Normalization
 
 ### 2.1. Q-Q plot
+```{r, results='hide', message=FALSE}
+library(lmerTest)
+model = lmer(energy_usage ~ guideline * treatment + (1|run_number), data = dat_data)
+anova(model)
+```
+
+```{r}
+qqnorm(resid(model))
+qqline(resid(model))
+shapiro.test(resid(model))
+```
+
 ### 2.2. Shapiro-Wilk test
 ```{r}
 # Run Shapiro-Wilk for each group
@@ -139,10 +151,63 @@ normality_results_norm
 ```
 
 - If most *shapiro_p* values after normalization are greater than 0.05, then distributions can be considered normal, and parametric tests (t-test) are justified.
-- If many are still below 0.05, non-parametric tests (Wilcoxon, ART).
+- If many are still below 0.05, non-parametric test (Wilcoxon) will be the case.
 
 ## 3. RQ1 tests (TBD)
+### 3.1. Non-parametric test
+```{r, results='hide', message=FALSE}
+# Option 1. Compare entire set
+all_no_guideline = dat_data[dat_data$treatment == 'no_guideline',]$energy_usage
+all_guideline = dat_data[dat_data$treatment == 'guideline',]$energy_usage
+wilcox.test(all_no_guideline, all_guideline)
+
+# g1_no_guideline = dat_data[dat_data$treatment == 'no_guideline' & dat_data$guideline == 'G1',]$energy_usage
+# g1_guideline = dat_data[dat_data$treatment == 'guideline' & dat_data$guideline == 'G1',]$energy_usage
+# wilcox.test(g1_no_guideline, g1_guideline)
+```
+
+```{r}
+# Option 2. Compare different treatments in terms of guidelines
+guidelines <- unique(dat_data$guideline)
+wilcox_results <- map_dfr(guidelines, function(g) {
+  # Subset for the current guideline
+  subset_data <- dat_data %>% filter(guideline == g)
+  
+  # Extract energy_usage for both treatments
+  no_guideline <- subset_data %>% filter(treatment == "no_guideline") %>% pull(energy_usage)
+  guideline     <- subset_data %>% filter(treatment == "guideline") %>% pull(energy_usage)
+  
+  # Run Wilcoxon test (only if both groups have data)
+    test_result <- wilcox.test(no_guideline, guideline)
+    
+    # Return a tidy row
+    tibble(
+      guideline = g,
+      p_value = test_result$p.value,
+      statistic = test_result$statistic,
+      method = test_result$method
+    )
+})
+
+# View results
+print(wilcox_results)
+```
 
 ## 4. RQ2 tests (TBD)
+### 4.1. Memory usage
+```{r, results='hide', message=FALSE}
+# Option 1. Compare entire set
+all_no_guideline = dat_data[dat_data$treatment == 'no_guideline',]$energy_usage
+all_guideline = dat_data[dat_data$treatment == 'guideline',]$energy_usage
+wilcox.test(all_no_guideline, all_guideline)
+
+# g1_no_guideline = dat_data[dat_data$treatment == 'no_guideline' & dat_data$guideline == 'G1',]$energy_usage
+# g1_guideline = dat_data[dat_data$treatment == 'guideline' & dat_data$guideline == 'G1',]$energy_usage
+# wilcox.test(g1_no_guideline, g1_guideline)
+```
+
+### 4.2. CPU usage
+### 4.1. Runtime
+
 
 ## 5. Summary plot
