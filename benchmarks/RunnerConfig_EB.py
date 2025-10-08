@@ -6,17 +6,12 @@ from ConfigValidator.Config.Models.FactorModel import FactorModel
 from ConfigValidator.Config.Models.RunnerContext import RunnerContext
 from ConfigValidator.Config.Models.OperationType import OperationType
 from ProgressManager.Output.OutputProcedure import OutputProcedure as output
+from Plugins.Profilers.EnergiBridge import EnergiBridge
 
-from Plugins.Profilers.PowerJoular import PowerJoular
-
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any, Optional
 from pathlib import Path
 from os.path import dirname, realpath
 
-import time
-import subprocess
-import numpy as np
-import pandas as pd
 
 class RunnerConfig:
     ROOT_DIR = Path(dirname(realpath(__file__)))
@@ -56,18 +51,20 @@ class RunnerConfig:
             (RunnerEvents.AFTER_EXPERIMENT , self.after_experiment )
         ])
         self.run_table_model = None  # Initialized later
+
         output.console_log("Custom config loaded")
 
     def create_run_table_model(self) -> RunTableModel:
         """Create and return the run_table model here. A run_table is a List (rows) of tuples (columns),
         representing each run performed"""
+        print()
         # factor1 = FactorModel("guideline", ['G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G18', 'G19'])
-        factor1 = FactorModel("guideline", ['G1'])
+        factor1 = FactorModel("guideline", ['G18'])
         # factor2 = FactorModel("code", [f'C{i}' for i in range(1, 11)])
-        factor2 = FactorModel("code", ['C7'])
+        factor2 = FactorModel("code", ['C1'])
         factor3 = FactorModel("treatment", ['guideline', 'no_guideline'])
         factor4 = FactorModel("run_number", [f'r{i}' for i in range(1, 11)])
-
+        # factor5 = FactorModel("problem_size", [None])
         self.run_table_model = RunTableModel(
             factors=[factor1, factor2, factor3, factor4],
             repetitions = 1,
@@ -89,78 +86,48 @@ class RunnerConfig:
         """Perform any activity required for starting the run here.
         For example, starting the target system to measure.
         Activities after starting the run should also be performed here."""
-        guideline = context.execute_run["guideline"]
-        code = context.execute_run["code"]
-        treatment = context.execute_run["treatment"]
-
-        # start the target
-        self.target = subprocess.Popen(['python3', f"benchmarks/{guideline}/{code}/{treatment}.py"],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=self.ROOT_DIR,
-        )
-
-        performance_profiler_cmd = f"ps -p {self.target.pid} --noheader -o '%mem'"
-        timer_cmd = f"while true; do {performance_profiler_cmd}; sleep 1; done"
-        self.performance_profiler = subprocess.Popen(['sh', '-c', timer_cmd],
-                                                     stdout=subprocess.PIPE, stderr=subprocess.PIPE
-                                                     )
-        
-        time.sleep(1) # allow the process to run a little before measuring
+        pass       
 
     def start_measurement(self, context: RunnerContext) -> None:
         """Perform any activity required for starting measurements."""
+        guideline = context.execute_run["guideline"]
+        # problem_size = context.execute_run["problem_size"]
+        code = context.execute_run["code"]
+        treatment = context.execute_run["treatment"]
         
-        # Set up the powerjoular object, provide an (optional) target and output file name
-        self.meter = PowerJoular(target_pid=self.target.pid, 
-                                 out_file=context.run_dir / "powerjoular.csv")
-        # Start measuring with powerjoular
-        self.meter.start()
+        self.profiler = EnergiBridge(target_program=f"python3 benchmarks/{guideline}/{code}/{treatment}.py",
+                                     out_file=context.run_dir / "energibridge.csv")
+
+        self.profiler.start()
 
     def interact(self, context: RunnerContext) -> None:
         """Perform any interaction with the running target system here, or block here until the target finishes."""
-
-        # No interaction. We just run it for XX seconds.
-        # Another example would be to wait for the target to finish, e.g. via `self.target.wait()`
         pass
 
     def stop_measurement(self, context: RunnerContext) -> None:
         """Perform any activity here required for stopping measurements."""
-        
-        # Stop the measurements
-        stdout = self.meter.stop(wait=True)
+        _ = self.profiler.stop(wait=True)
 
     def stop_run(self, context: RunnerContext) -> None:
         """Perform any activity here required for stopping the run.
         Activities after stopping the run should also be performed here."""
-        self.target.kill()
-        self.target.wait()
-        self.performance_profiler.kill()
-        self.performance_profiler.wait()
         self.timestamp_end = datetime.now()
-    
+
     def populate_run_data(self, context: RunnerContext) -> Optional[Dict[str, Any]]:
         """Parse and process any measurement data here.
         You can also store the raw measurement data under `context.run_dir`
         Returns a dictionary with keys `self.run_table_model.data_columns` and their values populated"""
-
-        psdf = pd.DataFrame(columns=['memory_usage'])
-        for i, l in enumerate(self.performance_profiler.stdout.readlines()):
-             decoded_line = l.decode('ascii').strip()
-             decoded_arr = decoded_line.split()
-             memory_usage = float(decoded_arr[0])
-             psdf.loc[i] = [memory_usage]
-        psdf.to_csv(context.run_dir / 'mem_data.csv', index=False)
         
-        out_file = context.run_dir / "powerjoular.csv"
-
-        results_global = self.meter.parse_log(out_file)
-        # If you specified a target_pid or used the -p paramter 
-        # a second csv for that target will be generated
-        # results_process = self.meter.parse_log(self.meter.target_logfile)
+        eb_log, _ = self.profiler.parse_log(self.profiler.logfile, 
+                                                     self.profiler.summary_logfile)
+        
+        cpu_usage = [max(eb_log[f"CPU_USAGE_{i}"].values()) for i in range(1, 8)]
+        
         return {
             "execution_time": (self.timestamp_end - self.timestamp_start).total_seconds(),
-            'cpu_usage': round(np.mean(list(results_global['CPU Utilization'].values())), 3),
-            'memory_usage': round(psdf['memory_usage'].mean(), 3),
-            'energy_usage': round(sum(list(results_global['CPU Power'].values())), 3),
+            "cpu_usage": max(cpu_usage),
+            "memory_usage": max(eb_log["USED_MEMORY"].values()),
+            "energy_usage": list(eb_log["SYSTEM_POWER (Watts)"].values())[-1] - list(eb_log["SYSTEM_POWER (Watts)"].values())[0],
         }
 
     def after_experiment(self) -> None:

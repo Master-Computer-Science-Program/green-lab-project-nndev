@@ -260,7 +260,7 @@ if __name__ == "__main__":
             3, [0, 0, 0, 1, 1, 1])
     ]
 
-    chaos = Chaosgame(splines, sys.argv[1] if len(sys.argv) > 1 else DEFAULT_THICKNESS) # thickness
+    chaos = Chaosgame(splines, float(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_THICKNESS) # thickness
     chaos.create_image_chaos(
         int(sys.argv[2]) if len(sys.argv) > 2 else DEFAULT_WIDTH,
         int(sys.argv[3]) if len(sys.argv) > 3 else DEFAULT_HEIGHT,

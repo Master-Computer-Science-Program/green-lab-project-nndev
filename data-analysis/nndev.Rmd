@@ -1,0 +1,315 @@
+# An Empirical Study on the Energy Usage and Performance of Python codes using Python Energy Efficiency Guidelines -- NNDEV
+
+## Setup
+```{r, results='hide', message=FALSE}
+install.packages(c("tidyverse", "ggplot2", "bestNormalize", "ARTool", "lmerTest", "xtable"))
+library(tidyverse)
+library(ggplot2)
+library(bestNormalize)
+library(ARTool)
+library(lmerTest)
+library(xtable)
+```
+
+## 1. Data Loading and Inspection
+
+### 1.1. Load data
+```{r}
+# setwd("/Users/ntd432/Desktop/SE4GD/VU/GreenLab/project/green-lab-project-nndev/data-analysis")
+dat_data <- read.csv("raw-data/dummy_data.csv") %>%
+  select(guideline, code, treatment, run_number, energy_usage, execution_time, cpu_usage, memory_usage) %>%
+  mutate(
+    guideline = factor(guideline),
+    code = factor(code),
+    treatment = factor(treatment),
+    run_number = factor(run_number)
+  )
+
+glimpse(dat_data)
+summary(dat_data)
+head(dat_data)
+```
+
+### 1.2. Histogram overall
+
+```{r}
+# Histogram of overall energy usage
+ggplot(dat_data, aes(x = energy_usage)) +
+  geom_histogram(bins = 30, fill = "skyblue", color = "black", alpha = 0.7) +
+  theme_minimal() +
+  labs(
+    title = "Histogram of Energy Usage",
+    x = "Energy Usage",
+    y = "Frequency"
+  )
+```
+
+#### 1.2.1. Split by treatment
+```{r}
+# Histogram split by treatment
+ggplot(dat_data, aes(x = energy_usage, fill = treatment)) +
+  geom_histogram(bins = 30, alpha = 0.6, position = "identity") +
+  facet_wrap(~ guideline, scales = "free_x") +
+  theme_minimal() +
+  labs(
+    title = "Energy Usage Distribution by Treatment",
+    x = "Energy Usage",
+    y = "Frequency",
+    fill = "Treatment"
+  )
+```
+
+#### 1.2.2. Split by run
+```{r}
+# Define "experiment" as library + dataframe_size
+dat_data <- dat_data %>%
+  mutate(
+    experiment = interaction(guideline, treatment),
+    run_number = factor(run_number, levels = paste0("r", 1:15), ordered = TRUE)
+    )
+
+ggplot(dat_data, aes(x = run_number, y = energy_usage, color = experiment)) +
+  geom_point(alpha = 0.8, size = 2) +
+  theme_minimal() +
+  labs(
+    title = "Energy Usage Across Runs",
+    x = "Run Number",
+    y = "Energy Usage",
+    color = "Experiment"
+  )
+```
+
+### 1.3. Box plot
+```{r}
+ggplot(dat_data, aes(x = treatment, y = energy_usage, fill=guideline)) +
+  geom_boxplot(alpha = 0.7) +
+  theme_minimal() +
+  labs(
+    title = "Energy Usage by Treatment",
+    x = "Treatment",
+    y = "Energy Usage",
+    fill = "Guideline"
+  )
+```
+
+## 2. Data Normality and Normalization
+
+### 2.1. Q-Q plot
+```{r, results='hide', message=FALSE}
+library(lmerTest)
+model = lmer(energy_usage ~ guideline * treatment + (1|run_number), data = dat_data)
+anova(model)
+```
+
+```{r}
+qqnorm(resid(model))
+qqline(resid(model))
+shapiro.test(resid(model))
+```
+
+### 2.2. Shapiro-Wilk test
+```{r}
+# Run Shapiro-Wilk for each group
+normality_results <- dat_data %>%
+  group_by(guideline, treatment) %>%
+  summarise(
+    shapiro_p = shapiro.test(energy_usage)$p.value,
+    .groups = "drop"
+  )
+
+normality_results
+```
+Interpretation: if p < 0.05, reject normality (data is not normal).
+
+### 2.3. Normalize data
+```{r}
+bn <- bestNormalize(dat_data$energy_usage)
+dat_data$norm_energy_usage <- bn$x.t
+```
+
+### 2.4. Visualization of normalized data (maybe do the test again)
+```{r}
+# Histogram of normalized values
+ggplot(dat_data, aes(x = norm_energy_usage)) +
+  geom_histogram(bins = 30, fill = "lightgreen", color = "black") +
+  theme_minimal() +
+  labs(
+    title = "Histogram of Normalized Energy Usage",
+    x = "Normalized Energy Usage",
+    y = "Frequency"
+  )
+
+# Shapiro-Wilk again for normalized values
+normality_results_norm <- dat_data %>%
+  group_by(guideline, treatment) %>%
+  summarise(
+    shapiro_p = shapiro.test(norm_energy_usage)$p.value,
+    .groups = "drop"
+  )
+
+normality_results_norm
+```
+
+- If most *shapiro_p* values after normalization are greater than 0.05, then distributions can be considered normal, and parametric tests (t-test) are justified.
+- If many are still below 0.05, non-parametric test (Wilcoxon) will be the case.
+
+## 3. RQ1 tests (TBD)
+### 3.1. Non-parametric test
+```{r, results='hide', message=FALSE}
+# Option 1. Compare entire set
+all_no_guideline_j = dat_data[dat_data$treatment == 'no_guideline',]$energy_usage
+all_guideline_j = dat_data[dat_data$treatment == 'guideline',]$energy_usage
+wilcox.test(all_no_guideline_j, all_guideline_j)
+
+# g1_no_guideline = dat_data[dat_data$treatment == 'no_guideline' & dat_data$guideline == 'G1',]$energy_usage
+# g1_guideline = dat_data[dat_data$treatment == 'guideline' & dat_data$guideline == 'G1',]$energy_usage
+# wilcox.test(g1_no_guideline, g1_guideline)
+```
+
+```{r}
+# Option 2. Compare different treatments in terms of guidelines
+guidelines <- unique(dat_data$guideline)
+wilcox_results <- map_dfr(guidelines, function(g) {
+  # Subset for the current guideline
+  subset_data <- dat_data %>% filter(guideline == g)
+  
+  # Extract energy_usage for both treatments
+  no_guideline_j <- subset_data %>% filter(treatment == "no_guideline") %>% pull(energy_usage)
+  guideline_j     <- subset_data %>% filter(treatment == "guideline") %>% pull(energy_usage)
+  
+  # Run Wilcoxon test (only if both groups have data)
+    test_result <- wilcox.test(no_guideline_j, guideline_j)
+    
+    # Return a tidy row
+    tibble(
+      guideline = g,
+      p_value = test_result$p.value,
+      statistic = test_result$statistic,
+      method = test_result$method
+    )
+})
+
+# View results
+print(wilcox_results)
+```
+
+## 4. RQ2 tests (TBD)
+### 4.1. Non-parametric test
+#### 4.1.1. Memory usage (B)
+```{r, results='hide', message=FALSE}
+# Option 1. Compare entire set
+all_no_guideline_b = dat_data[dat_data$treatment == 'no_guideline',]$memory_usage
+all_guideline_b = dat_data[dat_data$treatment == 'guideline',]$memory_usage
+wilcox.test(all_no_guideline_b, all_guideline_b)
+
+# g1_no_guideline = dat_data[dat_data$treatment == 'no_guideline' & dat_data$guideline == 'G1',]$memory_usage
+# g1_guideline = dat_data[dat_data$treatment == 'guideline' & dat_data$guideline == 'G1',]$memory_usage
+# wilcox.test(g1_no_guideline, g1_guideline)
+```
+
+```{r}
+# Option 2. Compare different treatments in terms of guidelines
+guidelines <- unique(dat_data$guideline)
+wilcox_results <- map_dfr(guidelines, function(g) {
+  # Subset for the current guideline
+  subset_data <- dat_data %>% filter(guideline == g)
+  
+  # Extract memory_usage for both treatments
+  no_guideline_b <- subset_data %>% filter(treatment == "no_guideline") %>% pull(memory_usage)
+  guideline_b     <- subset_data %>% filter(treatment == "guideline") %>% pull(memory_usage)
+  
+  # Run Wilcoxon test (only if both groups have data)
+    test_result <- wilcox.test(no_guideline_b, guideline_b)
+    
+    # Return a tidy row
+    tibble(
+      guideline = g,
+      p_value = test_result$p.value,
+      statistic = test_result$statistic,
+      method = test_result$method
+    )
+})
+
+# View results
+print(wilcox_results)
+```
+
+### 4.2. CPU usage (%)
+```{r, results='hide', message=FALSE}
+# Option 1. Compare entire set
+all_no_guideline_p = dat_data[dat_data$treatment == 'no_guideline',]$cpu_usage
+all_guideline_p = dat_data[dat_data$treatment == 'guideline',]$cpu_usage
+wilcox.test(all_no_guideline_p, all_guideline_p)
+
+# g1_no_guideline = dat_data[dat_data$treatment == 'no_guideline' & dat_data$guideline == 'G1',]$cpu_usage
+# g1_guideline = dat_data[dat_data$treatment == 'guideline' & dat_data$guideline == 'G1',]$cpu_usage
+# wilcox.test(g1_no_guideline, g1_guideline)
+```
+
+```{r}
+# Option 2. Compare different treatments in terms of guidelines
+guidelines <- unique(dat_data$guideline)
+wilcox_results <- map_dfr(guidelines, function(g) {
+  # Subset for the current guideline
+  subset_data <- dat_data %>% filter(guideline == g)
+  
+  # Extract cpu_usage for both treatments
+  no_guideline_p <- subset_data %>% filter(treatment == "no_guideline") %>% pull(cpu_usage)
+  guideline_p     <- subset_data %>% filter(treatment == "guideline") %>% pull(cpu_usage)
+  
+  # Run Wilcoxon test (only if both groups have data)
+    test_result <- wilcox.test(no_guideline_p, guideline_p)
+    
+    # Return a tidy row
+    tibble(
+      guideline = g,
+      p_value = test_result$p.value,
+      statistic = test_result$statistic,
+      method = test_result$method
+    )
+})
+
+# View results
+print(wilcox_results)
+```
+
+### 4.1. Execution time (s)
+```{r, results='hide', message=FALSE}
+# Option 1. Compare entire set
+all_no_guideline_s = dat_data[dat_data$treatment == 'no_guideline',]$execution_time
+all_guideline_s = dat_data[dat_data$treatment == 'guideline',]$execution_time
+wilcox.test(all_no_guideline_s, all_guideline_s)
+
+# g1_no_guideline = dat_data[dat_data$treatment == 'no_guideline' & dat_data$guideline == 'G1',]$cpu_usage
+# g1_guideline = dat_data[dat_data$treatment == 'guideline' & dat_data$guideline == 'G1',]$cpu_usage
+# wilcox.test(g1_no_guideline, g1_guideline)
+```
+
+```{r}
+# Option 2. Compare different treatments in terms of guidelines
+guidelines <- unique(dat_data$guideline)
+wilcox_results <- map_dfr(guidelines, function(g) {
+  # Subset for the current guideline
+  subset_data <- dat_data %>% filter(guideline == g)
+  
+  # Extract execution_time for both treatments
+  no_guideline_s <- subset_data %>% filter(treatment == "no_guideline") %>% pull(execution_time)
+  guideline_s     <- subset_data %>% filter(treatment == "guideline") %>% pull(execution_time)
+  
+  # Run Wilcoxon test (only if both groups have data)
+    test_result <- wilcox.test(no_guideline_s, guideline_s)
+    
+    # Return a tidy row
+    tibble(
+      guideline = g,
+      p_value = test_result$p.value,
+      statistic = test_result$statistic,
+      method = test_result$method
+    )
+})
+
+# View results
+print(wilcox_results)
+```
+
+## 5. Summary plot
