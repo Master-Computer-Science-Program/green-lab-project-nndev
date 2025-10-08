@@ -157,9 +157,9 @@ normality_results_norm
 ### 3.1. Non-parametric test
 ```{r, results='hide', message=FALSE}
 # Option 1. Compare entire set
-all_no_guideline = dat_data[dat_data$treatment == 'no_guideline',]$energy_usage
-all_guideline = dat_data[dat_data$treatment == 'guideline',]$energy_usage
-wilcox.test(all_no_guideline, all_guideline)
+all_no_guideline_j = dat_data[dat_data$treatment == 'no_guideline',]$energy_usage
+all_guideline_j = dat_data[dat_data$treatment == 'guideline',]$energy_usage
+wilcox.test(all_no_guideline_j, all_guideline_j)
 
 # g1_no_guideline = dat_data[dat_data$treatment == 'no_guideline' & dat_data$guideline == 'G1',]$energy_usage
 # g1_guideline = dat_data[dat_data$treatment == 'guideline' & dat_data$guideline == 'G1',]$energy_usage
@@ -174,11 +174,11 @@ wilcox_results <- map_dfr(guidelines, function(g) {
   subset_data <- dat_data %>% filter(guideline == g)
   
   # Extract energy_usage for both treatments
-  no_guideline <- subset_data %>% filter(treatment == "no_guideline") %>% pull(energy_usage)
-  guideline     <- subset_data %>% filter(treatment == "guideline") %>% pull(energy_usage)
+  no_guideline_j <- subset_data %>% filter(treatment == "no_guideline") %>% pull(energy_usage)
+  guideline_j     <- subset_data %>% filter(treatment == "guideline") %>% pull(energy_usage)
   
   # Run Wilcoxon test (only if both groups have data)
-    test_result <- wilcox.test(no_guideline, guideline)
+    test_result <- wilcox.test(no_guideline_j, guideline_j)
     
     # Return a tidy row
     tibble(
@@ -194,20 +194,122 @@ print(wilcox_results)
 ```
 
 ## 4. RQ2 tests (TBD)
-### 4.1. Memory usage
+### 4.1. Non-parametric test
+#### 4.1.1. Memory usage (B)
 ```{r, results='hide', message=FALSE}
 # Option 1. Compare entire set
-all_no_guideline = dat_data[dat_data$treatment == 'no_guideline',]$energy_usage
-all_guideline = dat_data[dat_data$treatment == 'guideline',]$energy_usage
-wilcox.test(all_no_guideline, all_guideline)
+all_no_guideline_b = dat_data[dat_data$treatment == 'no_guideline',]$memory_usage
+all_guideline_b = dat_data[dat_data$treatment == 'guideline',]$memory_usage
+wilcox.test(all_no_guideline_b, all_guideline_b)
 
-# g1_no_guideline = dat_data[dat_data$treatment == 'no_guideline' & dat_data$guideline == 'G1',]$energy_usage
-# g1_guideline = dat_data[dat_data$treatment == 'guideline' & dat_data$guideline == 'G1',]$energy_usage
+# g1_no_guideline = dat_data[dat_data$treatment == 'no_guideline' & dat_data$guideline == 'G1',]$memory_usage
+# g1_guideline = dat_data[dat_data$treatment == 'guideline' & dat_data$guideline == 'G1',]$memory_usage
 # wilcox.test(g1_no_guideline, g1_guideline)
 ```
 
-### 4.2. CPU usage
-### 4.1. Runtime
+```{r}
+# Option 2. Compare different treatments in terms of guidelines
+guidelines <- unique(dat_data$guideline)
+wilcox_results <- map_dfr(guidelines, function(g) {
+  # Subset for the current guideline
+  subset_data <- dat_data %>% filter(guideline == g)
+  
+  # Extract memory_usage for both treatments
+  no_guideline_b <- subset_data %>% filter(treatment == "no_guideline") %>% pull(memory_usage)
+  guideline_b     <- subset_data %>% filter(treatment == "guideline") %>% pull(memory_usage)
+  
+  # Run Wilcoxon test (only if both groups have data)
+    test_result <- wilcox.test(no_guideline_b, guideline_b)
+    
+    # Return a tidy row
+    tibble(
+      guideline = g,
+      p_value = test_result$p.value,
+      statistic = test_result$statistic,
+      method = test_result$method
+    )
+})
 
+# View results
+print(wilcox_results)
+```
+
+### 4.2. CPU usage (%)
+```{r, results='hide', message=FALSE}
+# Option 1. Compare entire set
+all_no_guideline_p = dat_data[dat_data$treatment == 'no_guideline',]$cpu_usage
+all_guideline_p = dat_data[dat_data$treatment == 'guideline',]$cpu_usage
+wilcox.test(all_no_guideline_p, all_guideline_p)
+
+# g1_no_guideline = dat_data[dat_data$treatment == 'no_guideline' & dat_data$guideline == 'G1',]$cpu_usage
+# g1_guideline = dat_data[dat_data$treatment == 'guideline' & dat_data$guideline == 'G1',]$cpu_usage
+# wilcox.test(g1_no_guideline, g1_guideline)
+```
+
+```{r}
+# Option 2. Compare different treatments in terms of guidelines
+guidelines <- unique(dat_data$guideline)
+wilcox_results <- map_dfr(guidelines, function(g) {
+  # Subset for the current guideline
+  subset_data <- dat_data %>% filter(guideline == g)
+  
+  # Extract cpu_usage for both treatments
+  no_guideline_p <- subset_data %>% filter(treatment == "no_guideline") %>% pull(cpu_usage)
+  guideline_p     <- subset_data %>% filter(treatment == "guideline") %>% pull(cpu_usage)
+  
+  # Run Wilcoxon test (only if both groups have data)
+    test_result <- wilcox.test(no_guideline_p, guideline_p)
+    
+    # Return a tidy row
+    tibble(
+      guideline = g,
+      p_value = test_result$p.value,
+      statistic = test_result$statistic,
+      method = test_result$method
+    )
+})
+
+# View results
+print(wilcox_results)
+```
+
+### 4.1. Execution time (s)
+```{r, results='hide', message=FALSE}
+# Option 1. Compare entire set
+all_no_guideline_s = dat_data[dat_data$treatment == 'no_guideline',]$execution_time
+all_guideline_s = dat_data[dat_data$treatment == 'guideline',]$execution_time
+wilcox.test(all_no_guideline_s, all_guideline_s)
+
+# g1_no_guideline = dat_data[dat_data$treatment == 'no_guideline' & dat_data$guideline == 'G1',]$cpu_usage
+# g1_guideline = dat_data[dat_data$treatment == 'guideline' & dat_data$guideline == 'G1',]$cpu_usage
+# wilcox.test(g1_no_guideline, g1_guideline)
+```
+
+```{r}
+# Option 2. Compare different treatments in terms of guidelines
+guidelines <- unique(dat_data$guideline)
+wilcox_results <- map_dfr(guidelines, function(g) {
+  # Subset for the current guideline
+  subset_data <- dat_data %>% filter(guideline == g)
+  
+  # Extract execution_time for both treatments
+  no_guideline_s <- subset_data %>% filter(treatment == "no_guideline") %>% pull(execution_time)
+  guideline_s     <- subset_data %>% filter(treatment == "guideline") %>% pull(execution_time)
+  
+  # Run Wilcoxon test (only if both groups have data)
+    test_result <- wilcox.test(no_guideline_s, guideline_s)
+    
+    # Return a tidy row
+    tibble(
+      guideline = g,
+      p_value = test_result$p.value,
+      statistic = test_result$statistic,
+      method = test_result$method
+    )
+})
+
+# View results
+print(wilcox_results)
+```
 
 ## 5. Summary plot
