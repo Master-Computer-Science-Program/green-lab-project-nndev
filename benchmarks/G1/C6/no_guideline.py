@@ -17,11 +17,10 @@ Modified by Christopher Sean Forgeron
 
 import bisect
 import re
+import time
 
-import pyperf
 
-
-DEFAULT_INIT_LEN = 100000
+DEFAULT_INIT_LEN = 1000000
 DEFAULT_RNG_SEED = 42
 
 ALU = ('GGCCGGGCGCGGTGGCTCACGCCTGTAATCCCAGCACTTTGG'
@@ -61,16 +60,12 @@ def repeat_fasta(src, n, nprint):
 
     len_of_src = len(src)
     ss = src + src + src[:n % len_of_src]
-    # CSF - It's faster to work with a bytearray than a string
     s = bytearray(ss, encoding='utf8')
 
     if n % width:
-        # We don't end on a 60 char wide line
         is_trailing_line = True
         count_modifier = 1.0
 
-    # CSF - Here we are stuck with using an int instead of a float for the loop,
-    # but testing showed it still to be faster than a for loop
     count = 0
     end = (n / float(width)) - count_modifier
     while count < end:
@@ -86,38 +81,28 @@ def random_fasta(table, n, seed, nprint):
     r = range(width)
     bb = bisect.bisect
 
-    # If we don't have a multiple of the width, then we will have a trailing
-    # line, which needs a slightly different approach
     is_trailing_line = False
     count_modifier = 0.0
 
-    line = bytearray(width + 1)    # Width of 60 + 1 for the \n char
+    line = bytearray(width + 1)
 
     probs, chars = make_cumulative(table)
 
-    # pRNG Vars
     im = 139968.0
     seed = float(seed)
 
     if n % width:
-        # We don't end on a 60 char wide line
         is_trailing_line = True
         count_modifier = 1.0
 
-    # CSF - Loops with a high iteration count run faster as a while/float loop.
     count = 0.0
     end = (n / float(width)) - count_modifier
     while count < end:
-        # CSF - Low iteration count loops may run faster as a for loop.
         for i in r:
-            # CSF - Python is faster for all float math than it is for int, on my
-            # machine at least.
             seed = (seed * 3877.0 + 29573.0) % 139968.0
-            # CSF - While real values, not variables are faster for most things, on my
-            # machine, it's faster to have 'im' already in a var
             line[i] = chars[bb(probs, seed / im)]
 
-        line[60] = 10   # End of Line
+        line[60] = 10
         nprint(line)
         count += 1.0
 
@@ -137,8 +122,6 @@ def init_benchmarks(n, rng_seed):
     nprint(b'>ONE Homo sapiens alu\n')
     repeat_fasta(ALU, n * 2, nprint=nprint)
 
-    # We need to keep track of the state of 'seed' so we pass it in, and return
-    # it back so our output can pass the diff test
     nprint(b'>TWO IUB ambiguity codes\n')
     seed = random_fasta(IUB, n * 3, seed=rng_seed, nprint=nprint)
 
@@ -186,39 +169,23 @@ def run_benchmarks(seq):
 
 def bench_regex_dna(loops, seq, expected_res):
     range_it = range(loops)
-    t0 = pyperf.perf_counter()
+    t0 = time.perf_counter()
 
-    for i in range_it:
+    for _ in range_it:
         res = run_benchmarks(seq)
 
-    dt = pyperf.perf_counter() - t0
+    dt = time.perf_counter() - t0
     if (expected_res is not None) and (res != expected_res):
         raise Exception("run_benchmarks() error")
 
     return dt
 
 
-def add_cmdline_args(cmd, args):
-    cmd.extend(("--fasta-length", str(args.fasta_length),
-                "--rng-seed", str(args.rng_seed)))
-
-
 if __name__ == '__main__':
-    runner = pyperf.Runner(add_cmdline_args=add_cmdline_args)
-    runner.metadata['description'] = ("Test the performance of regexps "
-                                      "using benchmarks from "
-                                      "The Computer Language Benchmarks Game.")
+    fasta_length = DEFAULT_INIT_LEN
+    rng_seed = DEFAULT_RNG_SEED
 
-    cmd = runner.argparser
-    cmd.add_argument("--fasta-length", type=int, default=DEFAULT_INIT_LEN,
-                     help="Length of the fasta sequence "
-                          "(default: %s)" % DEFAULT_INIT_LEN)
-    cmd.add_argument("--rng-seed", type=int, default=DEFAULT_RNG_SEED,
-                     help="Seed of the random number generator "
-                          "(default: %s)" % DEFAULT_RNG_SEED)
-
-    args = runner.parse_args()
-    if args.fasta_length == 100000:
+    if fasta_length == 100000:
         expected_len = 1016745
         expected_res = ([6, 26, 86, 58, 113, 31, 31, 32, 43],
                         1016745, 1000000, 1336326)
@@ -226,11 +193,10 @@ if __name__ == '__main__':
         expected_len = None
         expected_res = None
 
-    runner.metadata['regex_dna_fasta_len'] = args.fasta_length
-    runner.metadata['regex_dna_rng_seed'] = args.rng_seed
-
-    seq = init_benchmarks(args.fasta_length, args.rng_seed)
+    seq = init_benchmarks(fasta_length, rng_seed)
     if (expected_len is not None) and (len(seq) != expected_len):
         raise Exception("init_benchmarks() error")
 
-    runner.bench_time_func('regex_dna', bench_regex_dna, seq, expected_res)
+    # Benchmark is executed here
+    elapsed = bench_regex_dna(loops=5, seq=seq, expected_res=expected_res)
+    print(f"Benchmark completed in {elapsed:.6f} seconds (5 loops)")
