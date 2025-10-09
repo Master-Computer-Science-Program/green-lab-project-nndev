@@ -18,7 +18,9 @@ Modified by Christopher Sean Forgeron
 import bisect
 import re
 
-import pyperf
+import sys,os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config
 
 
 DEFAULT_INIT_LEN = 100000
@@ -183,43 +185,11 @@ def run_benchmarks(seq):
 
     return results, ilen, clen, len(seq)
 
-
-def bench_regex_dna(loops, seq, expected_res):
-    range_it = range(loops)
-    t0 = pyperf.perf_counter()
-
-    for i in range_it:
-        res = run_benchmarks(seq)
-
-    dt = pyperf.perf_counter() - t0
-    if (expected_res is not None): 
-        if (res != expected_res):
-            raise Exception("run_benchmarks() error")
-
-    return dt
-
-
-def add_cmdline_args(cmd, args):
-    cmd.extend(("--fasta-length", str(args.fasta_length),
-                "--rng-seed", str(args.rng_seed)))
-
-
 if __name__ == '__main__':
-    runner = pyperf.Runner(add_cmdline_args=add_cmdline_args)
-    runner.metadata['description'] = ("Test the performance of regexps "
-                                      "using benchmarks from "
-                                      "The Computer Language Benchmarks Game.")
+    fasta_length = int(config.C2_ARG[1])
+    rng_seed = int(config.C2_ARG[2])
 
-    cmd = runner.argparser
-    cmd.add_argument("--fasta-length", type=int, default=DEFAULT_INIT_LEN,
-                     help="Length of the fasta sequence "
-                          "(default: %s)" % DEFAULT_INIT_LEN)
-    cmd.add_argument("--rng-seed", type=int, default=DEFAULT_RNG_SEED,
-                     help="Seed of the random number generator "
-                          "(default: %s)" % DEFAULT_RNG_SEED)
-
-    args = runner.parse_args()
-    if args.fasta_length == 100000:
+    if fasta_length == 100000:
         expected_len = 1016745
         expected_res = ([6, 26, 86, 58, 113, 31, 31, 32, 43],
                         1016745, 1000000, 1336326)
@@ -227,12 +197,14 @@ if __name__ == '__main__':
         expected_len = None
         expected_res = None
 
-    runner.metadata['regex_dna_fasta_len'] = args.fasta_length
-    runner.metadata['regex_dna_rng_seed'] = args.rng_seed
-
-    seq = init_benchmarks(args.fasta_length, args.rng_seed)
+    seq = init_benchmarks(fasta_length, rng_seed)
     if (expected_len is not None):
         if (len(seq) != expected_len):
             raise Exception("init_benchmarks() error")
+        
+    for i in range(int(config.C2_ARG[0])):
+        res = run_benchmarks(seq)
 
-    runner.bench_time_func('regex_dna', bench_regex_dna, seq, expected_res)
+    if (expected_res is not None):
+        if (res != expected_res):
+            raise Exception("run_benchmarks() error")

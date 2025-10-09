@@ -13,4 +13,4 @@ class Solution:
     
 if __name__ == "__main__":
     s = Solution()
-    args = ast.literal_eval(sys.argv[1])
+    print(s.twoSum(ast.literal_eval(sys.argv[1]), int(sys.argv[2])))
