@@ -1,6 +1,7 @@
 from typing import List
-import sys
-import ast
+import sys,os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config
 
 class Solution:
     def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
@@ -15,4 +16,5 @@ class Solution:
         
 if __name__ == "__main__":
     s = Solution()
-    print(s.findMedianSortedArrays(ast.literal_eval(sys.argv[1]), ast.literal_eval(sys.argv[2])))
+    for i in range(config.C3_ARG[0]):
+        print(s.findMedianSortedArrays(config.C3_ARG[1], config.C3_ARG[2]))

@@ -6,7 +6,9 @@
 # modified by Maciej Fijalkowski
 # 2to3
 
-import sys
+import sys,os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config
 
 def combinations(l):
     result = []
@@ -113,4 +115,4 @@ def main(n, ref='sun'):
     report_energy()
 
 if __name__ == '__main__':
-    main(int(sys.argv[1]))
+    main(int(config.C1_ARG[0]))

@@ -11,7 +11,9 @@ From http://www.lshift.net/blog/2008/10/29/toy-raytracer-in-python
 import array
 import math
 
-import pyperf
+import sys,os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config
 
 
 DEFAULT_WIDTH = 100
@@ -346,19 +348,16 @@ class CheckerboardSurface(SimpleSurface):
         v = p - Point.ZERO
         v.scale(1.0 / self.checkSize)
         if ((int(abs(v.x) + 0.5)
-             + int(abs(v.y) + 0.5)
-             + int(abs(v.z) + 0.5)) % 2):
+                + int(abs(v.y) + 0.5)
+                + int(abs(v.z) + 0.5)) % 2):
             return self.otherColour
         else:
             return self.baseColour
 
 
-def bench_raytrace(loops, width, height, filename):
-    range_it = range(loops)
-    t0 = pyperf.perf_counter()
-
-    for i in range_it:
-        canvas = Canvas(width, height)
+if __name__ == "__main__":
+    for i in range(config.C6_ARG[0]):
+        canvas = Canvas(config.C6_ARG[1], config.C6_ARG[2])
         s = Scene()
         s.addLight(Point(30, 30, 10))
         s.addLight(Point(-10, 100, 30))
@@ -372,37 +371,5 @@ def bench_raytrace(loops, width, height, filename):
                     CheckerboardSurface())
         s.render(canvas)
 
-    dt = pyperf.perf_counter() - t0
-
-    if filename:
-        canvas.write_ppm(filename)
-    return dt
-
-
-def add_cmdline_args(cmd, args):
-    cmd.append("--width=%s" % args.width)
-    cmd.append("--height=%s" % args.height)
-    if args.filename:
-        cmd.extend(("--filename", args.filename))
-
-
-if __name__ == "__main__":
-    runner = pyperf.Runner(add_cmdline_args=add_cmdline_args)
-    cmd = runner.argparser
-    cmd.add_argument("--width",
-                     type=int, default=DEFAULT_WIDTH,
-                     help="Image width (default: %s)" % DEFAULT_WIDTH)
-    cmd.add_argument("--height",
-                     type=int, default=DEFAULT_HEIGHT,
-                     help="Image height (default: %s)" % DEFAULT_HEIGHT)
-    cmd.add_argument("--filename", metavar="FILENAME.PPM",
-                     help="Output filename of the PPM picture")
-
-    args = runner.parse_args()
-    runner.metadata['description'] = "Simple raytracer"
-    runner.metadata['raytrace_width'] = args.width
-    runner.metadata['raytrace_height'] = args.height
-
-    runner.bench_time_func('raytrace', bench_raytrace,
-                           args.width, args.height,
-                           args.filename)
+    if len(config.C6_ARG) > 3:
+        canvas.write_ppm(config.C6_ARG[3])

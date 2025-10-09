@@ -51,11 +51,8 @@ def escape_velocity(mass: float, radius: float) -> float:
 
 if __name__ == "__main__":
     try:
-        mass = float(sys.argv[1])
-        radius = float(sys.argv[2])
-
-        velocity = escape_velocity(mass=mass, radius=radius)
-        print(f"Escape velocity is {velocity} m/s")
+        for i in range(int(sys.argv[1])):
+            print(escape_velocity(float(sys.argv[2]), float(sys.argv[3])))
 
     except ValueError:
         print("Invalid input. Please enter valid numeric values.")

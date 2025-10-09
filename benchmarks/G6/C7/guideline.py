@@ -11,6 +11,7 @@ import multiprocessing as mp
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import config
 
+import time
 
 def make_tree(d):
 
@@ -73,8 +74,11 @@ def main(n, min_depth=4):
         print('{0}\t trees of depth {1}\t check: {2}'.format(i, d, cs))
 
     print('long lived tree of depth {0}\t check: {1}'.format(
-          max_depth, check_tree(long_lived_tree)))
+        max_depth, check_tree(long_lived_tree)))
 
 
 if __name__ == '__main__':
+    start = time.time()
     main(int(config.C7_ARG[0]))
+    end = time.time()
+    print("Elapsed time:", end - start, "seconds")

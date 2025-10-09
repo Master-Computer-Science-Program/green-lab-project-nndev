@@ -1,4 +1,6 @@
-import sys
+import sys,os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config
 
 class Solution:
     def isPerfectSquare(self, num: int) -> bool:
@@ -9,4 +11,5 @@ class Solution:
     
 if __name__ == "__main__":
     s = Solution()
-    print(s.isPerfectSquare(int(sys.argv[1])))
+    for i in range(int(config.C4_ARG[0])):
+        print(s.isPerfectSquare(int(i)))
