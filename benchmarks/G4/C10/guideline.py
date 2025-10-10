@@ -2,7 +2,9 @@ import collections
 from collections import defaultdict
 from fractions import Fraction
 
-import pyperf
+import sys,os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config
 
 
 def topoSort(roots, getParents):
@@ -243,24 +245,15 @@ class Battle(object):
         return (dmax[initial_statep] + dmin[initial_statep]) / 2
 
 
-def bench_mdp(loops):
+if __name__ == "__main__":
     expected = 0.89873589887
     max_diff = 1e-6
-    range_it = range(loops)
+    range_it = range(config.C10_ARG[0])
 
-    t0 = pyperf.perf_counter()
     for _ in range_it:
         result = Battle().evaluate(0.192)
-    dt = pyperf.perf_counter() - t0
 
     if abs(result - expected) > max_diff:
         raise Exception("invalid result: got %s, expected %s "
-                        "(diff: %s, max diff: %s)"
-                        % (result, expected, result - expected, max_diff))
-    return dt
-
-
-if __name__ == "__main__":
-    runner = pyperf.Runner()
-    runner.metadata['description'] = "MDP benchmark"
-    runner.bench_time_func('mdp', bench_mdp)
+            "(diff: %s, max diff: %s)"
+            % (result, expected, result - expected, max_diff))

@@ -9,7 +9,9 @@ based on a Java version:
  Outer loop added by Alex Jacoby
 """
 
-import pyperf
+import sys,os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config
 
 
 
@@ -398,8 +400,9 @@ class Richards(object):
 
 
 if __name__ == "__main__":
-    runner = pyperf.Runner()
-    runner.metadata['description'] = "The Richards benchmark"
-
+    import time
+    start = time.time()
     richard = Richards()
-    runner.bench_func('richards', richard.run, 1)
+    richard.run(int(config.C10_ARG[0]))
+    end = time.time()
+    print("Time taken:", end - start)

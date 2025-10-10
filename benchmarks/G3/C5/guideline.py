@@ -1,4 +1,6 @@
-import sys
+import sys,os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config
 
 class Solution:
     def isAnagram(self, s: str, t: str) -> bool:
@@ -18,4 +20,5 @@ class Solution:
     
 if __name__ == "__main__":
     s = Solution()
-    print(s.isAnagram(sys.argv[1], sys.argv[2]))
+    for i in range(config.C5_ARG[0]):
+        print(s.isAnagram(config.C5_ARG[1], config.C5_ARG[2]))
