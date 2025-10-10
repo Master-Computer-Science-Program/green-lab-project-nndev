@@ -7,8 +7,7 @@
 # 2to3
 
 import sys,os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-import config
+
 
 def combinations(l):
     result = []
@@ -115,4 +114,5 @@ def main(n, ref='sun'):
     report_energy()
 
 if __name__ == '__main__':
-    main(int(config.C1_ARG[0]))
+    from benchmarks.G1.config import C1_ARG
+    main(int(C1_ARG[0]))
