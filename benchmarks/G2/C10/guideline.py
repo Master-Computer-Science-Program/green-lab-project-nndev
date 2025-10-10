@@ -109,18 +109,11 @@ def bubble_sort_recursive(collection: list[Any]) -> list[Any]:
 
 
 if __name__ == "__main__":
-    import doctest
-    from random import sample
-    from timeit import timeit
-
-    doctest.testmod()
-
-    # Benchmark: Iterative seems slightly faster than recursive.
-    n = 10000000  # Number of repetitions
+    n = 10_000_000  # Number of repetitions
     param = C10_ARG
     start_time = time.time()
 
-    for _ in range(n):
+    for i in range(n):
         bubble_sort_iterative(param)
     end_time = time.time()
     total_time = end_time - start_time

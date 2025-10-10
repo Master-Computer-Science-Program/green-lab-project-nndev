@@ -8,6 +8,7 @@
 
 import sys
 
+
 def combinations(l):
     result = []
     for x in range(len(l) - 1):
@@ -113,4 +114,5 @@ def main(n, ref='sun'):
     report_energy()
 
 if __name__ == '__main__':
-    main(int(sys.argv[1]))
+    from benchmarks.G1.config import C1_ARG
+    main(int(C1_ARG[0]))
