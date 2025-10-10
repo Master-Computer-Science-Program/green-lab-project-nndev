@@ -25,27 +25,36 @@ def re_compile(s):
 
 
 def gen_regex_table():
+    python_perl = 'Python|Perl'          # before: repeated inline
+    python = 'Python'                    # before: repeated inline
+    python_perl_tcl = 'Python|Perl|Tcl'  # before: repeated inline
+    python_backref = '(Python)\\1'       # before: repeated inline
+    expr1 = '([0a-z][a-z0-9]*,)+'        # before: repeated inline
+    expr2 = '(?:[0a-z][a-z0-9]*,)+'      # before: repeated inline
+    expr3 = '([a-z][a-z0-9]*,)+'         # before: repeated inline
+    expr4 = '(?:[a-z][a-z0-9]*,)+'       # before: repeated inline
+
     return [
-        re_compile('Python|Perl'),
-        re_compile('Python|Perl'),
+        re_compile(python_perl),
+        re_compile(python_perl),      # was: re_compile('Python|Perl')
         re_compile('(Python|Perl)'),
         re_compile('(?:Python|Perl)'),
-        re_compile('Python'),
-        re_compile('Python'),
+        re_compile(python),           # was: re_compile('Python')
+        re_compile(python),
         re_compile('.*Python'),
         re_compile('.*Python.*'),
         re_compile('.*(Python)'),
         re_compile('.*(?:Python)'),
-        re_compile('Python|Perl|Tcl'),
-        re_compile('Python|Perl|Tcl'),
+        re_compile(python_perl_tcl),
+        re_compile(python_perl_tcl),  # was: re_compile('Python|Perl|Tcl')
         re_compile('(Python|Perl|Tcl)'),
         re_compile('(?:Python|Perl|Tcl)'),
-        re_compile('(Python)\\1'),
-        re_compile('(Python)\\1'),
-        re_compile('([0a-z][a-z0-9]*,)+'),
-        re_compile('(?:[0a-z][a-z0-9]*,)+'),
-        re_compile('([a-z][a-z0-9]*,)+'),
-        re_compile('(?:[a-z][a-z0-9]*,)+'),
+        re_compile(python_backref),
+        re_compile(python_backref),   # was: re_compile('(Python)\\1')
+        re_compile(expr1),
+        re_compile(expr2),
+        re_compile(expr3),
+        re_compile(expr4),
         re_compile('.*P.*y.*t.*h.*o.*n.*')]
 
 
@@ -57,27 +66,35 @@ def gen_string_table(n):
             strings.append(s.encode('latin1'))
         else:
             strings.append(s)
-    append('-' * n + 'Perl' + '-' * n)
-    append('P' * n + 'Perl' + 'P' * n)
-    append('-' * n + 'Perl' + '-' * n)
-    append('-' * n + 'Perl' + '-' * n)
-    append('-' * n + 'Python' + '-' * n)
-    append('P' * n + 'Python' + 'P' * n)
-    append('-' * n + 'Python' + '-' * n)
-    append('-' * n + 'Python' + '-' * n)
-    append('-' * n + 'Python' + '-' * n)
-    append('-' * n + 'Python' + '-' * n)
-    append('-' * n + 'Perl' + '-' * n)
-    append('P' * n + 'Perl' + 'P' * n)
-    append('-' * n + 'Perl' + '-' * n)
-    append('-' * n + 'Perl' + '-' * n)
-    append('-' * n + 'PythonPython' + '-' * n)
-    append('P' * n + 'PythonPython' + 'P' * n)
-    append('-' * n + 'a5,b7,c9,' + '-' * n)
-    append('-' * n + 'a5,b7,c9,' + '-' * n)
-    append('-' * n + 'a5,b7,c9,' + '-' * n)
-    append('-' * n + 'a5,b7,c9,' + '-' * n)
-    append('-' * n + 'Python' + '-' * n)
+
+    suffix = '-' * n   # before: repeated '-' * n
+    prefixP = 'P' * n  # before: repeated 'P' * n
+    perl = 'Perl'
+    python = 'Python'
+    pythonpython = 'PythonPython'
+    a5b7c9 = 'a5,b7,c9,'
+
+    append(suffix + perl + suffix)         # was: '-' * n + 'Perl' + '-' * n
+    append(prefixP + perl + prefixP)       # was: 'P' * n + 'Perl' + 'P' * n
+    append(suffix + perl + suffix)
+    append(suffix + perl + suffix)
+    append(suffix + python + suffix)       # was: '-' * n + 'Python' + '-' * n
+    append(prefixP + python + prefixP)
+    append(suffix + python + suffix)
+    append(suffix + python + suffix)
+    append(suffix + python + suffix)
+    append(suffix + python + suffix)
+    append(suffix + perl + suffix)
+    append(prefixP + perl + prefixP)
+    append(suffix + perl + suffix)
+    append(suffix + perl + suffix)
+    append(suffix + pythonpython + suffix)   # was: '-' * n + 'PythonPython' + '-' * n
+    append(prefixP + pythonpython + prefixP)
+    append(suffix + a5b7c9 + suffix)         # was: '-' * n + 'a5,b7,c9,' + '-' * n
+    append(suffix + a5b7c9 + suffix)
+    append(suffix + a5b7c9 + suffix)
+    append(suffix + a5b7c9 + suffix)
+    append(suffix + python + suffix)
     return strings
 
 
@@ -109,16 +126,8 @@ def bench_regex_effbot(loops):
     for _ in range_it:
         for regex, string in data:
             # search 10 times
-            search(regex, string)
-            search(regex, string)
-            search(regex, string)
-            search(regex, string)
-            search(regex, string)
-            search(regex, string)
-            search(regex, string)
-            search(regex, string)
-            search(regex, string)
-            search(regex, string)
+            for _ in range(10):        # before: repeated 10 times manually
+                search(regex, string)
 
     return time.perf_counter() - t0
 
