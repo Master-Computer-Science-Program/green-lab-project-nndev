@@ -22,18 +22,6 @@ Source : https://en.wikipedia.org/wiki/Speed_of_sound
 import sys
 
 def speed_of_sound_in_a_fluid(density: float, bulk_modulus: float) -> float:
-    """
-    Calculates the speed of sound in a fluid from its density and bulk modulus
-
-    Examples:
-    Example 1 --> Water 20°C: bulk_modulus= 2.15MPa, density=998kg/m³
-    Example 2 --> Mercury 20°C: bulk_modulus= 28.5MPa, density=13600kg/m³
-
-    >>> speed_of_sound_in_a_fluid(bulk_modulus=2.15e9, density=998)
-    1467.7563207952705
-    >>> speed_of_sound_in_a_fluid(bulk_modulus=28.5e9, density=13600)
-    1447.614670861731
-    """
 
     if density <= 0:
         raise ValueError("Impossible fluid density")
@@ -44,4 +32,5 @@ def speed_of_sound_in_a_fluid(density: float, bulk_modulus: float) -> float:
 
 
 if __name__ == "__main__":
-    print(speed_of_sound_in_a_fluid(float(sys.argv[1]), float(sys.argv[2])))
+    for i in range(int(sys.argv[1])):
+        print(speed_of_sound_in_a_fluid(float(sys.argv[2]), float(sys.argv[3])))

@@ -1,6 +1,8 @@
 from typing import List
 from collections import defaultdict
-import sys
+import sys,os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config
 
 class Solution:
     def maxPoints(self, points: List[List[int]]) -> int:
@@ -26,5 +28,5 @@ class Solution:
     
 if __name__ == "__main__":
     s = Solution()
-    points = [[i, i] for i in range(int(sys.argv[1]))]
+    points = [[i, i] for i in range(int(config.C3_ARG[0]))]
     print(s.maxPoints(points))
