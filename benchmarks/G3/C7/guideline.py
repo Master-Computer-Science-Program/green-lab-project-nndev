@@ -1,6 +1,9 @@
 from typing import List
 import sys
-import ast
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config 
+import time
 
 class Solution:
     def maxSubarraySumCircular(self, nums: List[int]) -> int:
@@ -16,5 +19,8 @@ class Solution:
         return res
     
 if __name__ == "__main__":
+    start_time=time.time()
     s = Solution()
-    print(s.maxSubarraySumCircular(ast.literal_eval(sys.argv[1])))
+    print(s.maxSubarraySumCircular(config.C7_ARG))
+    end_time=time.time()
+    print("time: "+str(end_time-start_time))
