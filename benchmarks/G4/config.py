@@ -4,3 +4,7 @@ C3_ARG = ["test.fasta"]
 C4_ARG = [15000000,[1,2,3,4,5,None,None,6],[2,4,5]] # Elapsed time: 33.63814115524292 seconds
 C5_ARG = [18000000,[5,3,8,1,4,7,9,None,2],3,4] # Elapsed time: 34.614689111709595 seconds
 C6_ARG = [150,100,100] # Elapsed time: 31.557974100112915 seconds
+C7_ARG = [0.2,2048,2048,2000000,"output.txt",1234] # Elapsed time: 28.515496969223022 seconds
+C8_ARG = [10] # Elapsed time: 35.88444900512695 seconds
+C9_ARG = [11] # Elapsed time: 41.86983013153076 seconds
+C10_ARG = [12] # Elapsed time: 25.10271382331848 seconds

@@ -7,9 +7,11 @@
 from io import StringIO
 from gmpy2 import xmpz,div,mul,add
 
-import sys
+import sys,os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config
 
-N = int(sys.argv[1])
+N = int(config.C2_ARG[0])
 f = StringIO()
 
 w = xmpz(0)

@@ -8,13 +8,14 @@ https://github.com/openai/tiktoken
 """
 from __future__ import annotations
 
-import pyperf
+import sys,os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config
 
 
 import collections
 import re
 from pathlib import Path
-
 
 class SimpleBytePairEncoding:
     def __init__(self, *, pat_str: str, mergeable_ranks: dict[bytes, int]) -> None:
@@ -138,21 +139,12 @@ def train(data: str):
 
     enc.encode(data)
 
-
-def bench_bpe_tokeniser(loops: int) -> float:
+if __name__ == "__main__":
     DATA = Path(__file__).parent / "data" / "frankenstein_intro.txt"
     with open(DATA, "r", encoding="utf8") as f:
         data = f.read()
 
-    range_it = range(loops)
-
-    t0 = pyperf.perf_counter()
+    range_it = range(config.C8_ARG[0])
+    
     for _ in range_it:
         train(data)
-    return pyperf.perf_counter() - t0
-
-
-if __name__ == "__main__":
-    runner = pyperf.Runner()
-    runner.metadata["description"] = "Benchmark a BPE tokeniser"
-    runner.bench_time_func("bpe_tokeniser", bench_bpe_tokeniser)
