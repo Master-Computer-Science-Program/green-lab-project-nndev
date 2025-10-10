@@ -10,4 +10,5 @@ def gaussian(x, mu: float = 0.0, sigma: float = 1.0) -> float:
 
 
 if __name__ == "__main__":
-    print(gaussian(float(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3])))
+    for i in range(int(sys.argv[1])):
+        print(gaussian(float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4])))

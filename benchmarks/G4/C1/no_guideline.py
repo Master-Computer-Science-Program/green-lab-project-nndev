@@ -1,5 +1,7 @@
 from typing import Optional
-import sys
+import sys,os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config
 
 class TreeNode:
     def __init__(self, val=0, left=None, right=None):
@@ -20,6 +22,7 @@ class Solution:
 
 if __name__ == "__main__":
     s = Solution()
-    node1 = TreeNode(int(sys.argv[1]), TreeNode(int(sys.argv[2])), TreeNode(int(sys.argv[3])))
-    node2 = TreeNode(int(sys.argv[4]), TreeNode(int(sys.argv[5])), TreeNode(int(sys.argv[6])))
-    print(s.isSameTree(node1, node2))
+    for i in range(int(config.C1_ARG[0])):
+        node1 = TreeNode(int(config.C1_ARG[1]), TreeNode(int(config.C1_ARG[2])), TreeNode(config.C1_ARG[3]))
+        node2 = TreeNode(int(config.C1_ARG[4]), TreeNode(int(config.C1_ARG[5])), TreeNode(int(config.C1_ARG[6])))
+        print(s.isSameTree(node1, node2))

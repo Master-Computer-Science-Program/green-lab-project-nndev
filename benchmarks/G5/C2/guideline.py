@@ -1,6 +1,8 @@
 from typing import List
 import heapq
-import sys
+import sys,os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config
 
 class Solution:
     def kClosest(self, points: List[List[int]], k: int) -> List[List[int]]:
@@ -20,5 +22,5 @@ class Solution:
     
 if __name__ == "__main__":
     s = Solution()
-    points = [[i, i] for i in range(int(sys.argv[1]))]
-    print(s.kClosest(points, int(sys.argv[2])))
+    points = [[i, i] for i in range(int(config.C2_ARG[0]))]
+    print(s.kClosest(points, int(config.C2_ARG[1])))

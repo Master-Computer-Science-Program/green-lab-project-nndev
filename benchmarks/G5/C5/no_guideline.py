@@ -6,7 +6,9 @@ Copyright (C) 2005 Carl Friedrich Bolz
 import math
 import random
 
-import sys
+import sys,os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config
 
 
 DEFAULT_THICKNESS = 0.25
@@ -260,10 +262,10 @@ if __name__ == "__main__":
             3, [0, 0, 0, 1, 1, 1])
     ]
 
-    chaos = Chaosgame(splines, float(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_THICKNESS) # thickness
+    chaos = Chaosgame(splines, float(config.C5_ARG[0]) if len(config.C5_ARG) > 1 else DEFAULT_THICKNESS) # thickness
     chaos.create_image_chaos(
-        int(sys.argv[2]) if len(sys.argv) > 2 else DEFAULT_WIDTH,
-        int(sys.argv[3]) if len(sys.argv) > 3 else DEFAULT_HEIGHT,
-        int(sys.argv[4]) if len(sys.argv) > 4 else DEFAULT_ITERATIONS,
-        sys.argv[5] if len(sys.argv) > 5 else None,
-        int(sys.argv[6]) if len(sys.argv) > 6 else DEFAULT_RNG_SEED) # rng_seed
+        int(config.C5_ARG[1]) if len(config.C5_ARG) > 2 else DEFAULT_WIDTH,
+        int(config.C5_ARG[2]) if len(config.C5_ARG) > 3 else DEFAULT_HEIGHT,
+        int(config.C5_ARG[3]) if len(config.C5_ARG) > 4 else DEFAULT_ITERATIONS,
+        config.C5_ARG[4] if len(config.C5_ARG) > 5 else None,
+        int(config.C5_ARG[5]) if len(config.C5_ARG) > 6 else DEFAULT_RNG_SEED) # rng_seed

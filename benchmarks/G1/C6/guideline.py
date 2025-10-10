@@ -17,8 +17,9 @@ Modified by Christopher Sean Forgeron
 
 import bisect
 import re
-import time
-
+import sys,os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config
 
 DEFAULT_INIT_LEN = 1000000
 DEFAULT_RNG_SEED = 42
@@ -172,25 +173,9 @@ def run_benchmarks(seq):
 
     return results, ilen, clen, len(seq)
 
-
-def bench_regex_dna(loops, seq, expected_res):
-    range_it = range(loops)
-    t0 = time.perf_counter()
-
-    res = None
-    for _ in range_it:
-        res = run_benchmarks(seq)
-
-    dt = time.perf_counter() - t0
-    if (expected_res is not None) and (res != expected_res):
-        raise Exception("run_benchmarks() error")
-
-    return dt
-
-
 if __name__ == '__main__':
-    fasta_length = DEFAULT_INIT_LEN
-    rng_seed = DEFAULT_RNG_SEED
+    fasta_length = int(config.C6_ARG[1])
+    rng_seed = int(config.C6_ARG[2])
 
     if fasta_length == 100000:
         expected_len = 1016745
@@ -201,9 +186,13 @@ if __name__ == '__main__':
         expected_res = None
 
     seq = init_benchmarks(fasta_length, rng_seed)
-    if (expected_len is not None) and (len(seq) != expected_len):
-        raise Exception("init_benchmarks() error")
+    if (expected_len is not None):
+        if (len(seq) != expected_len):
+            raise Exception("init_benchmarks() error")
+        
+    for i in range(int(config.C6_ARG[0])):
+        res = run_benchmarks(seq)
 
-    # Benchmark is executed here
-    elapsed = bench_regex_dna(loops=5, seq=seq, expected_res=expected_res)
-    print(f"Benchmark completed in {elapsed:.6f} seconds (5 loops)")
+    if (expected_res is not None):
+        if (res != expected_res):
+            raise Exception("run_benchmarks() error")

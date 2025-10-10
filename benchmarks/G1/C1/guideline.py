@@ -6,7 +6,7 @@
 # modified by Maciej Fijalkowski
 # 2to3
 
-import sys
+import sys,os
 
 
 def combinations(l):

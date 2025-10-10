@@ -14,7 +14,6 @@ Concurrency by Jason Stitt
 
 import sys
 
-
 def eval_A(i, j):
     return 1.0 / (((i + j) * (i + j + 1) // 2 + i + 1) + 1e-5)
 
