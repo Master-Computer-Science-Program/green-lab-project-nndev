@@ -1,4 +1,8 @@
 import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config 
+
 
 class Solution:
     def tribonacci(self, n: int) -> int:
@@ -8,4 +12,6 @@ class Solution:
     
 if __name__ == "__main__":
     s = Solution()
-    print(s.tribonacci(int(sys.argv[1])))
+    loop=config.C4_ARG
+    for i in loop:
+        print(s.tribonacci(i))

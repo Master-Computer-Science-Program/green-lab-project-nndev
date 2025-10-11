@@ -1,4 +1,8 @@
 import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config 
+sys.setrecursionlimit(500000)
 
 class Solution:
     def numSquares(self, n: int) -> int:
@@ -23,4 +27,4 @@ class Solution:
     
 if __name__ == "__main__":
     s = Solution()
-    print(s.numSquares(int(sys.argv[1])))
+    print(s.numSquares(config.C2_ARG[0]))

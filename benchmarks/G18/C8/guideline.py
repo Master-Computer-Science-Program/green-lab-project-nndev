@@ -1,6 +1,9 @@
 from typing import List
 import sys
-import ast
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config 
+import time
 
 class Solution:
     def wordBreak(self, s: str, wordDict: List[str]) -> bool:
@@ -22,5 +25,8 @@ class Solution:
         return dfs(0)
     
 if __name__ == "__main__":
+    start=time.time()
     s = Solution()
-    print(s.wordBreak(sys.argv[1], ast.literal_eval(sys.argv[2])))
+    print(s.wordBreak(config.C8_ARG[0],config.C8_ARG[1]))
+    end=time.time()
+    print(end-start)

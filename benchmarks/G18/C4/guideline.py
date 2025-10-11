@@ -1,4 +1,8 @@
 import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config 
+import time
 
 class Solution:
     def __init__(self):
@@ -14,5 +18,10 @@ class Solution:
         return self.dp[n]
     
 if __name__ == "__main__":
+    start=time.time()
     s = Solution()
-    print(s.tribonacci(int(sys.argv[1])))
+    loop=config.C4_ARG
+    for i in loop:
+        print(s.tribonacci(i))
+    end=time.time()
+    print("time: "+str(end-start))

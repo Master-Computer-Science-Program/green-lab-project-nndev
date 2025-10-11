@@ -3,6 +3,7 @@ from typing import List
 import sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import config
+import time
 
 class Solution:
     def combinationSum4(self, nums: List[int], target: int) -> int:
@@ -24,5 +25,8 @@ class Solution:
         return dfs(target)
     
 if __name__ == "__main__":
+    start_time=time.time()
     solution = Solution()
     print(solution.combinationSum4(config.C1_ARG[0], int(config.C1_ARG[1])))
+    end_time=time.time()
+    print(end_time-start_time)
