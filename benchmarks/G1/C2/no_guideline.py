@@ -319,10 +319,6 @@ def fib_matrix_np(n: int) -> int:
 
 if __name__ == "__main__":
     from benchmarks.G1.config import C2_ARG
-    import time
-    start = time.time()
+
     for _ in range(200000):
         fib_binet(C2_ARG[0])
-    end = time.time()
-    duration = end - start
-    print("Elasped time:", duration, "seconds")

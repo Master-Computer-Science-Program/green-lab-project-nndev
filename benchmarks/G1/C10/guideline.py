@@ -573,8 +573,9 @@ def projection_test(n):
 
     dests = OrderedCollection()
     multipleof5=[]
+
     for i in range(n):
-        multipleof5[i]=i * 5
+        multipleof5.append(i * 5)
         src = Variable("src%s" % i, i)
         dst = Variable("dst%s" % i, i)
         dests.append(dst)
@@ -630,8 +631,8 @@ def delta_blue(n):
 
 
 if __name__ == "__main__":
+    from benchmarks.G1.config import C10_ARG
+
     runner = pyperf.Runner()
     runner.metadata['description'] = "DeltaBlue benchmark"
-
-    n = 100
-    runner.bench_func('deltablue', delta_blue, n)
+    runner.bench_func('deltablue', delta_blue, C10_ARG[0])

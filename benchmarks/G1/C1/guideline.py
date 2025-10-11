@@ -116,3 +116,4 @@ def main(n, ref='sun'):
 if __name__ == '__main__':
     from benchmarks.G1.config import C1_ARG
     main(int(C1_ARG[0]))
+

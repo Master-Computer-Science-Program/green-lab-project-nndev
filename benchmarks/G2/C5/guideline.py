@@ -16,5 +16,8 @@ class Solution:
             return merged[totalLen // 2]
         
 if __name__ == "__main__":
+    from benchmarks.G2.config import C5_ARG
+
     s = Solution()
-    print(s.findMedianSortedArrays(ast.literal_eval(sys.argv[1]), ast.literal_eval(sys.argv[2])))
+    for _ in range(15000000):
+        s.findMedianSortedArrays(C5_ARG[0], C5_ARG[1])

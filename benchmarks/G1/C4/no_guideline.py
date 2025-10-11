@@ -17,11 +17,6 @@ class Solution:
     
 if __name__ == "__main__":
     from benchmarks.G1.config import C4_ARG
-    import time
-    start = time.time()
     s = Solution()
     for _ in range(15000000):
         s.search(C4_ARG[0], C4_ARG[1])
-    end = time.time()
-    duration = end - start
-    print("Elasped time:", duration, "seconds")

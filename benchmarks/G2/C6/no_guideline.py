@@ -19,5 +19,8 @@ class Solution:
         return res[::-1]
     
 if __name__ == "__main__":
+    from benchmarks.G2.config import C6_ARG
+
     s = Solution()
-    print(s.sortedSquares(ast.literal_eval(sys.argv[1])))
+    for _ in range(15000000):
+        s.sortedSquares(C6_ARG[0])

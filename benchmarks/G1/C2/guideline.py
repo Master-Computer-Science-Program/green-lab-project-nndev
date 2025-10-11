@@ -319,23 +319,6 @@ def fib_matrix_np(n: int) -> int:
 
 if __name__ == "__main__":
     from benchmarks.G1.config import C2_ARG
-    import time
-    # duration = timeit.timeit(lambda: fib_binet(C2_ARG[0]), number=200000)
-    # print("Elasped time:" ,duration, "seconds")
-    start = time.time()
+
     for _ in range(200000):
         fib_binet(C2_ARG[0])
-    end = time.time()
-    duration = end - start
-    print("Elasped time:", duration, "seconds")
-
-
-    # Time on an M1 MacBook Pro -- Fastest to slowest
-    # num = 30
-    # time_func(fib_iterative_yield, num)  # 0.0012 ms
-    # time_func(fib_iterative, num)  # 0.0031 ms
-    # time_func(fib_binet, num)  # 0.0062 ms
-    # time_func(fib_memoization, num)  # 0.0100 ms
-    # time_func(fib_recursive_cached, num)  # 0.0153 ms
-    # time_func(fib_recursive, num)  # 257.0910 ms
-    # time_func(fib_matrix_np, num)  # 0.0000 ms

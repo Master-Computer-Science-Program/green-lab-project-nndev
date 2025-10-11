@@ -6,18 +6,23 @@ class Solution:
     def findMedianSortedArrays(self, nums1: List[int], nums2: List[int]) -> float:
         nums1.sort()
         nums2.sort()
+        sort_nums1 = sorted(nums1)
+        sort_nums2 = sorted(nums2)
 
         len1 = len(nums1)
         len2 = len(nums2)
-        merged = nums1 + nums2
-        merged.sort()
+        merged = sort_nums1 + sort_nums2
 
+        merged.sort()
         totalLen = len(merged)
         if totalLen % 2 == 0:
             return (merged[totalLen // 2 - 1] + merged[totalLen // 2]) / 2.0
         else:
             return merged[totalLen // 2]
-        
+
 if __name__ == "__main__":
+    from benchmarks.G2.config import C5_ARG
+
     s = Solution()
-    print(s.findMedianSortedArrays(ast.literal_eval(sys.argv[1]), ast.literal_eval(sys.argv[2])))
+    for _ in range(15000000):
+        s.findMedianSortedArrays(C5_ARG[0], C5_ARG[1])

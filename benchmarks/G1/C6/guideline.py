@@ -174,8 +174,6 @@ def run_benchmarks(seq):
     return results, ilen, clen, len(seq)
 
 if __name__ == '__main__':
-    import time
-    start = time.time()
     fasta_length = int(config.C6_ARG[1])
     rng_seed = int(config.C6_ARG[2])
 
@@ -199,6 +197,4 @@ if __name__ == '__main__':
         if (res != expected_res):
             raise Exception("run_benchmarks() error")
 
-    end = time.time()
-    duration = end - start
-    print("duration:", duration)
+

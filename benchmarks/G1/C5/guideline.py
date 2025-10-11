@@ -140,4 +140,3 @@ if __name__ == '__main__':
     from benchmarks.G1.config import C5_ARG
     USE_BYTES = False  # change to True to test with bytes
     elapsed = bench_regex_effbot(C5_ARG[0])
-    print(f"Benchmark completed in {elapsed:.6f} seconds (5 loops × 10 inner searches)")

@@ -74,11 +74,4 @@ def main(n, min_depth=4):
 
 
 if __name__ == '__main__':
-    import time
-
-    start = time.time()
-
     main(int(C7_ARG[0]))
-
-    end = time.time()
-    print('Elapsed Time: {0}'.format(end - start), "seconds")

@@ -9,7 +9,6 @@ python3 quick_sort.py
 """
 
 from __future__ import annotations
-from benchmarks.G2.config import C8_ARG
 from random import randrange
 import time
 
@@ -53,14 +52,8 @@ def quick_sort(collection: list) -> list:
 
 
 if __name__ == "__main__":
-    n = 300000000  # Number of repetitions
-    start_time = time.time()
+    from benchmarks.G2.config import C8_ARG
 
-    for _ in range(n):
-        quick_sort(C8_ARG)
+    for _ in range(300000000):
+        quick_sort(C8_ARG[0])
 
-    end_time = time.time()
-    total_time = end_time - start_time
-    print(f"Executed quick_sort {n} times.")
-    print(f"Total execution time: {total_time:.6f} seconds")
-    print(f"Average execution time per run: {total_time / n:.6f} seconds")
