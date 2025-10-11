@@ -384,7 +384,7 @@ def reaumur_to_rankine(reaumur: float, ndigits: int = 2) -> float:
 
 
 if __name__ == "__main__":
-    looper=config.C9_ARG
+    looper=config.C10_ARG
     for i in looper:
         print(rankine_to_celsius(i[0],i[1]))
         print(rankine_to_fahrenheit(i[0],i[1]))
