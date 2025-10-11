@@ -6,7 +6,9 @@ Copyright (C) 2005 Carl Friedrich Bolz
 import math
 import random
 
-import pyperf
+import sys,os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config
 
 
 DEFAULT_THICKNESS = 0.25
@@ -235,8 +237,7 @@ class Chaosgame(object):
         if filename:
             write_ppm(im, filename)
 
-
-def main(runner, args):
+if __name__ == "__main__":
     splines = [
         Spline([
             GVector(1.597350, 3.304460, 0.000000),
@@ -261,50 +262,10 @@ def main(runner, args):
             3, [0, 0, 0, 1, 1, 1])
     ]
 
-    runner.metadata['chaos_thickness'] = args.thickness
-    runner.metadata['chaos_width'] = args.width
-    runner.metadata['chaos_height'] = args.height
-    runner.metadata['chaos_iterations'] = args.iterations
-    runner.metadata['chaos_rng_seed'] = args.rng_seed
-
-    chaos = Chaosgame(splines, args.thickness)
-    runner.bench_func('chaos', chaos.create_image_chaos,
-                      args.width, args.height, args.iterations,
-                      args.filename, args.rng_seed)
-
-
-def add_cmdline_args(cmd, args):
-    cmd.append("--width=%s" % args.width)
-    cmd.append("--height=%s" % args.height)
-    cmd.append("--thickness=%s" % args.thickness)
-    cmd.append("--rng-seed=%s" % args.rng_seed)
-    if args.filename:
-        cmd.extend(("--filename", args.filename))
-
-
-if __name__ == "__main__":
-    runner = pyperf.Runner(add_cmdline_args=add_cmdline_args)
-    runner.metadata['description'] = "Create chaosgame-like fractals"
-    cmd = runner.argparser
-    cmd.add_argument("--thickness",
-                     type=float, default=DEFAULT_THICKNESS,
-                     help="Thickness (default: %s)" % DEFAULT_THICKNESS)
-    cmd.add_argument("--width",
-                     type=int, default=DEFAULT_WIDTH,
-                     help="Image width (default: %s)" % DEFAULT_WIDTH)
-    cmd.add_argument("--height",
-                     type=int, default=DEFAULT_HEIGHT,
-                     help="Image height (default: %s)" % DEFAULT_HEIGHT)
-    cmd.add_argument("--iterations",
-                     type=int, default=DEFAULT_ITERATIONS,
-                     help="Number of iterations (default: %s)"
-                          % DEFAULT_ITERATIONS)
-    cmd.add_argument("--filename", metavar="FILENAME.PPM",
-                     help="Output filename of the PPM picture")
-    cmd.add_argument("--rng-seed",
-                     type=int, default=DEFAULT_RNG_SEED,
-                     help="Random number generator seed (default: %s)"
-                          % DEFAULT_RNG_SEED)
-
-    args = runner.parse_args()
-    main(runner, args)
+    chaos = Chaosgame(splines, float(config.C7_ARG[0]) if len(config.C7_ARG) > 1 else DEFAULT_THICKNESS) # thickness
+    chaos.create_image_chaos(
+        int(config.C7_ARG[1]) if len(config.C7_ARG) > 2 else DEFAULT_WIDTH,
+        int(config.C7_ARG[2]) if len(config.C7_ARG) > 3 else DEFAULT_HEIGHT,
+        int(config.C7_ARG[3]) if len(config.C7_ARG) > 4 else DEFAULT_ITERATIONS,
+        config.C7_ARG[4] if len(config.C7_ARG) > 5 else None,
+        int(config.C7_ARG[5]) if len(config.C7_ARG) > 6 else DEFAULT_RNG_SEED) # rng_seed

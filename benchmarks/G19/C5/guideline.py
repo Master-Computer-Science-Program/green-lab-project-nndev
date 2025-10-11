@@ -10,6 +10,7 @@ import sys, os
 import multiprocessing as mp
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import config
+import time
 
 def make_tree(d):
 
@@ -76,4 +77,7 @@ def main(n, min_depth=4):
 
 
 if __name__ == '__main__':
+    start=time.time()
     main(int(config.C5_ARG[0]))
+    end=time.time()
+    print(end-start)

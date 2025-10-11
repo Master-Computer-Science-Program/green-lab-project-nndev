@@ -1,6 +1,10 @@
 from typing import List
 import sys
-import ast
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config 
+import time
+sys.setrecursionlimit(900000)
 
 class Solution:
     def coinChange(self, coins: List[int], amount: int) -> int:
@@ -14,5 +18,10 @@ class Solution:
         return dp[amount] if dp[amount] != amount + 1 else -1
 
 if __name__ == "__main__":
+    start=time.time()
     solution = Solution()
-    print(solution.coinChange(ast.literal_eval(sys.argv[1]), int(sys.argv[2])))
+    looper=config.C7_ARG
+    for i in looper:
+        print(solution.coinChange(i[0],i[1]))
+    end=time.time()
+    print(end-start)

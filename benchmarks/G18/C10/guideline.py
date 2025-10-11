@@ -1,6 +1,9 @@
 from typing import List
 import sys
-import ast
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config 
+import time
 
 class Solution:
     def canPartition(self, nums: List[int]) -> bool:
@@ -27,5 +30,10 @@ class Solution:
         return dfs(0, target)
     
 if __name__ == "__main__":
+    start=time.time()
     s = Solution()
-    print(s.canPartition(ast.literal_eval(sys.argv[1])))
+    looper=config.C10_ARG
+    for i in looper:
+        print(s.canPartition(i))
+    end=time.time()
+    print(end-start)

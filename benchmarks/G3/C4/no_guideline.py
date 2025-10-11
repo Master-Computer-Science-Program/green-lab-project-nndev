@@ -1,6 +1,7 @@
 from typing import List
-import sys
-import ast
+import sys,os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config
 
 class Solution:
     def twoSum(self, nums: List[int], target: int) -> List[int]:
@@ -12,4 +13,6 @@ class Solution:
     
 if __name__ == "__main__":
     s = Solution()
-    print(s.twoSum(ast.literal_eval(sys.argv[1]), int(sys.argv[2])))
+    nums = list(range(config.C4_ARG[0]))
+    target = nums[-2] + nums[-1]
+    print(s.twoSum(nums, target))

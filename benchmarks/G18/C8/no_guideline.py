@@ -1,6 +1,9 @@
 from typing import List
 import sys
-import ast
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config 
+
 
 class Solution:
     def wordBreak(self, s: str, wordDict: List[str]) -> bool:
@@ -21,4 +24,6 @@ class Solution:
     
 if __name__ == "__main__":
     s = Solution()
-    print(s.wordBreak(sys.argv[1], ast.literal_eval(sys.argv[2])))
+    looper=config.C8_ARG
+    for i in looper:
+        print(s.wordBreak(i[0],i[1]))

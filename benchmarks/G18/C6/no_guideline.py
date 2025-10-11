@@ -1,4 +1,7 @@
 import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config 
 
 class Solution:
     def numDecodings(self, s: str) -> int:
@@ -20,4 +23,7 @@ class Solution:
     
 if __name__ == "__main__":
     s = Solution()
-    print(s.numDecodings(sys.argv[1]))
+    s = Solution()
+    looparray=config.C6_ARG
+    for i in looparray:
+        print(s.numDecodings(i))
