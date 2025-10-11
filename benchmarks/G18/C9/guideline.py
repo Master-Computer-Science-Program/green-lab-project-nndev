@@ -1,6 +1,9 @@
 from typing import List
 import sys
-import ast
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config 
+import time
 
 class Solution:
     def lengthOfLIS(self, nums: List[int]):
@@ -25,4 +28,6 @@ class Solution:
     
 if __name__ == "__main__":
     s = Solution()
-    print(s.lengthOfLIS(ast.literal_eval(sys.argv[1])))
+    looper=config.C9_ARG
+    for i in looper:
+        print(s.lengthOfLIS(i))

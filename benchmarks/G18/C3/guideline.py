@@ -1,4 +1,9 @@
 import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import config 
+import time
+sys.setrecursionlimit(500000)
 
 class Solution:
     def climbStairs(self, n: int) -> int:
@@ -12,4 +17,6 @@ class Solution:
     
 if __name__ == "__main__":
     s = Solution()
-    print(s.climbStairs(int(sys.argv[1])))
+    loop=config.C3_ARG
+    for i in loop:
+        print(s.climbStairs(i))
