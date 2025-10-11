@@ -23,4 +23,6 @@ class Solution:
 
 if __name__ == "__main__":
     solution = Solution()
-    print(solution.coinChange(config.C7_ARG[0],config.C7_ARG[1]))
+    looper=config.C7_ARG
+    for i in looper:
+        print(solution.coinChange(i[0],i[1]))

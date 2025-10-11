@@ -24,4 +24,6 @@ class Solution:
     
 if __name__ == "__main__":
     s = Solution()
-    print(s.wordBreak(config.C8_ARG[0],config.C8_ARG[1]))
+    looper=config.C8_ARG
+    for i in looper:
+        print(s.wordBreak(i[0],i[1]))
