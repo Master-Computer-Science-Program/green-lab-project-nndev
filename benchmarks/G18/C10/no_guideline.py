@@ -21,6 +21,6 @@ class Solution:
     
 if __name__ == "__main__":
     s = Solution()
-    looper=config.C9_ARG
+    looper=config.C10_ARG
     for i in looper:
         print(s.canPartition(i))

@@ -22,7 +22,10 @@ class Solution:
         return dfs(0)
     
 if __name__ == "__main__":
+    start=time.time()
     s = Solution()
     looparray=config.C5_ARG
     for i in looparray:
         print(s.rob(i))
+    end=time.time()
+    print(end-start)
