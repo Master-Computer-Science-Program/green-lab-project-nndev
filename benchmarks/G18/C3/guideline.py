@@ -3,7 +3,6 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import config 
 import time
-sys.setrecursionlimit(500000)
 
 class Solution:
     def climbStairs(self, n: int) -> int:

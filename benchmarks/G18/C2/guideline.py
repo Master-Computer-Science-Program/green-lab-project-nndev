@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import config 
-sys.setrecursionlimit(500000)
+import time 
 
 class Solution:
     def numSquares(self, n: int) -> int:
@@ -26,5 +26,8 @@ class Solution:
         return dfs(n)
     
 if __name__ == "__main__":
+    start_time=time.time()
     s = Solution()
     print(s.numSquares(config.C2_ARG[0]))
+    end_time=time.time()
+    print(end_time-start_time)

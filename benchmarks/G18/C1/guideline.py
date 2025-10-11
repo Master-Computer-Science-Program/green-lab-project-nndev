@@ -26,7 +26,9 @@ class Solution:
     
 if __name__ == "__main__":
     start_time=time.time()
+    looper=config.C1_ARG
     solution = Solution()
-    print(solution.combinationSum4(config.C1_ARG[0], int(config.C1_ARG[1])))
+    for i in looper:
+        print(solution.combinationSum4(i[0], int(i[1])))
     end_time=time.time()
     print(end_time-start_time)
