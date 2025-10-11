@@ -20,5 +20,8 @@ class Solution:
             last -= 1
 
 if __name__ == "__main__":
+    from benchmarks.G2.config import C3_ARG
+
     s = Solution()
-    print(s.merge(ast.literal_eval(sys.argv[1]), int(sys.argv[2]), ast.literal_eval(sys.argv[3]), int(sys.argv[4])))
+    for _ in range(80000000):
+        s.merge(C3_ARG[0], C3_ARG[1], C3_ARG[2], C3_ARG[3])

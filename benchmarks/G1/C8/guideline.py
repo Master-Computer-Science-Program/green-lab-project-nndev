@@ -89,6 +89,7 @@ def count_frequencies(sequence, reading_frames, i, j):
         bits = 0
         if i == 0:
             for k in range(i, i + frame - 1):
+                print(k, len(sequence))
                 bits = bits * 4 + sequence[k]
                 for t, (f, m) in enumerate(short_frame_frequences, 1):
                     if k - i + 1 >= frames[t]:
@@ -156,7 +157,7 @@ def main():
     input_file = os.path.join(os.path.dirname(__file__), config.C8_ARG[0]) if len(config.C8_ARG) > 0 else None
     with open(input_file, "rb") if input_file else stdin.buffer as f:
         sequence = read_sequence(f, b'THREE', translation)
-
+        print(sequence)
     # changed here
     mono_nucleotides = ('G', 'A', 'T', 'C')
     di_nucleotides = tuple(n + m

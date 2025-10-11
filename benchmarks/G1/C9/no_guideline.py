@@ -73,4 +73,9 @@ def mandelbrot(n):
             write(row[1])
 
 if __name__ == '__main__':
+    import time
+    start = time.time()
     mandelbrot(int(config.C9_ARG[0]))
+
+    end = time.time()
+    print('Elapsed Time: {0}'.format(end - start), "seconds")

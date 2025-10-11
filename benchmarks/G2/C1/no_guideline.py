@@ -19,5 +19,8 @@ class Solution:
         return self.binary_search(0, len(nums) - 1, nums, target)
     
 if __name__ == "__main__":
+    from benchmarks.G2.config import C1_ARG
+
     s = Solution()
-    print(s.search(ast.literal_eval(sys.argv[1]), int(sys.argv[2])))
+    for _ in range(15000000):
+        s.search(C1_ARG[0], C1_ARG[1])

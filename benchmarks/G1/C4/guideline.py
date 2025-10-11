@@ -18,5 +18,7 @@ class Solution:
         return self.binary_search(0, len(nums) - 1, nums, target)
     
 if __name__ == "__main__":
+    from benchmarks.G1.config import C4_ARG
     s = Solution()
-    print(s.sortedSquares(ast.literal_eval(sys.argv[1])))
+    for _ in range(15000000):
+        s.search(C4_ARG[0], C4_ARG[1])

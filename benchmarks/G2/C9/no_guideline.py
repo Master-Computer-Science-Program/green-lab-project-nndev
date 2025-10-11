@@ -62,13 +62,5 @@ def cyclic_sort(nums: list[int]) -> list[int]:
 
     return first_sort
 if __name__ == "__main__":
-    n = 90000000  # Number of repetitions
-    param = C9_ARG
-    start_time = time.time()
-
-    for _ in range(n):
-        cyclic_sort(param)
-    end_time = time.time()
-    total_time = end_time - start_time
-    print(f"Executed cyclic_sort {n} times.")
-    print(f"Total execution time: {total_time:.6f} seconds") #79.539053s for 90,000,000 runs
+    for _ in range(90000000):
+        cyclic_sort(C9_ARG[0])

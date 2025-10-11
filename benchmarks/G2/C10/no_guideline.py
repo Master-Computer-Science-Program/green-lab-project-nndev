@@ -111,13 +111,5 @@ def bubble_sort_recursive(collection: list[Any]) -> list[Any]:
 
 
 if __name__ == "__main__":
-    n = 200_000  # Number of repetitions
-    param = C10_ARG
-    start_time = time.time()
-
-    for i in range(n):
-        bubble_sort_iterative(param)
-    end_time = time.time()
-    total_time = end_time - start_time
-    print(f"Executed cyclic_sort {n} times.")
-    print(f"Total execution time: {total_time:.6f} seconds")
+    for i in range(500_000):
+        bubble_sort_iterative(C10_ARG[0])

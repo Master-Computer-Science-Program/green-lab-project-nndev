@@ -7,10 +7,7 @@ python3 -m doctest -v counting_sort.py
 For manual testing run:
 python counting_sort.py
 """
-import ast
-import sys
-import time
-from benchmarks.G2.config import C7_ARG
+
 
 
 def counting_sort(collection):
@@ -71,12 +68,9 @@ def counting_sort_string(string):
 if __name__ == "__main__":
     # Test string sort
     assert counting_sort_string("thisisthestring") == "eghhiiinrsssttt"
-    # s = Solution()
-    # print(s.counting_sort(ast.literal_eval(sys.argv[1])))
-    start_time = time.time()
-    counting_sort(C7_ARG)
-    end_time = time.time()
-    print(f"Execution time: {end_time - start_time:.6f} seconds") #elapsed time: 37.282416 seconds
-    # print(counting_sort(C7_ARG))
+
+    from benchmarks.G2.config import C7_ARG
+    counting_sort(C7_ARG[0])
+
 
 

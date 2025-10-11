@@ -185,10 +185,11 @@ if __name__ == '__main__':
     if (expected_len is not None):
         if (len(seq) != expected_len):
             raise Exception("init_benchmarks() error")
-        
+
     for i in range(int(config.C6_ARG[0])):
         res = run_benchmarks(seq)
 
     if (expected_res is not None):
         if (res != expected_res):
             raise Exception("run_benchmarks() error")
+

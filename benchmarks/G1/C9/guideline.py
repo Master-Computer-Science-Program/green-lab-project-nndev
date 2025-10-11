@@ -77,3 +77,4 @@ def mandelbrot(n):
 
 if __name__ == '__main__':
     mandelbrot(int(config.C9_ARG[0]))
+

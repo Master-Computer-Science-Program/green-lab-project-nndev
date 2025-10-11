@@ -629,8 +629,10 @@ def delta_blue(n):
 
 
 if __name__ == "__main__":
+    from benchmarks.G1.config import C10_ARG
+
     runner = pyperf.Runner()
     runner.metadata['description'] = "DeltaBlue benchmark"
 
-    n = 100
-    runner.bench_func('deltablue', delta_blue, n)
+    runner.bench_func('deltablue', delta_blue, C10_ARG[0])
+
