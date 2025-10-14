@@ -17,6 +17,7 @@ https://en.wikipedia.org/wiki/Fibonacci_number for more information
 import functools
 from collections.abc import Iterator
 from math import sqrt
+import sys, os
 from time import time
 
 import numpy as np
@@ -318,7 +319,8 @@ def fib_matrix_np(n: int) -> int:
 
 
 if __name__ == "__main__":
-    from benchmarks.G6.config import C9_ARG
+    sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+    from config import C9_ARG
     import time
 
     start = time.time()

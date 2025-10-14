@@ -103,6 +103,8 @@ if __name__ == "__main__":
     # Test string sort
     assert counting_sort_string("thisisthestring") == "eghhiiinrsssttt"
 
-    from benchmarks.G2.config import C7_ARG
+    import sys, os
+    sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+    from config import C7_ARG
 
     counting_sort(C7_ARG[0])

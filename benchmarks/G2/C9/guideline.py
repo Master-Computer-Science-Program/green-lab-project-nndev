@@ -11,7 +11,9 @@ or
 python3 cyclic_sort.py
 """
 import time
-from benchmarks.G2.config import C9_ARG
+import sys, os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from config import C9_ARG
 
 
 def cyclic_sort(nums: list[int]) -> list[int]:
