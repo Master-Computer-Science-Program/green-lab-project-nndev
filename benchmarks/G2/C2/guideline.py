@@ -9,7 +9,9 @@ class Solution:
         return []
     
 if __name__ == "__main__":
-    from benchmarks.G2.config import C2_ARG
+    import sys, os
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+    from config import C2_ARG
 
     s = Solution()
     for _ in range(15000000):

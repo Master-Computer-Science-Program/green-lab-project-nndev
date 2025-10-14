@@ -1,6 +1,7 @@
 from typing import List
 import sys
 import ast
+import sys, os
 
 class Solution:
     def binary_search(self, l: int, r: int, nums: List[int], target: int) -> int:
@@ -18,7 +19,8 @@ class Solution:
         return self.binary_search(0, len(nums) - 1, nums, target)
     
 if __name__ == "__main__":
-    from benchmarks.G1.config import C4_ARG
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+    from config import C4_ARG
     s = Solution()
     for _ in range(15000000):
         s.search(C4_ARG[0], C4_ARG[1])

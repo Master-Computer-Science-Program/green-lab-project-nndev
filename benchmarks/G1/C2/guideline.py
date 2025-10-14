@@ -21,6 +21,7 @@ from time import time
 
 import numpy as np
 from numpy import ndarray
+import sys, os
 
 
 def time_func(func, *args, **kwargs):
@@ -318,7 +319,8 @@ def fib_matrix_np(n: int) -> int:
 
 
 if __name__ == "__main__":
-    from benchmarks.G1.config import C2_ARG
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+    from config import C2_ARG
 
     for _ in range(200000):
         fib_binet(C2_ARG[0])

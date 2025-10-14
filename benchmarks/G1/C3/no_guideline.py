@@ -7,6 +7,7 @@ import math
 import random
 
 import pyperf
+import sys, os
 
 
 DEFAULT_THICKNESS = 0.25
@@ -282,7 +283,8 @@ def add_cmdline_args(cmd, args):
 
 
 if __name__ == "__main__":
-    from benchmarks.G1.config import C3_ARG
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+    from config import C3_ARG
     splines = [
         Spline([
             GVector(1.597350, 3.304460, 0.000000),

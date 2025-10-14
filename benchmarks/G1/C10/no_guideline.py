@@ -19,7 +19,7 @@ the layout & logic from the original. (Ugh.)
 """
 
 import pyperf
-
+import os, sys
 
 # The JS variant implements "OrderedCollection", which basically completely
 # overlaps with ``list``. So we'll cheat. :D
@@ -629,7 +629,8 @@ def delta_blue(n):
 
 
 if __name__ == "__main__":
-    from benchmarks.G1.config import C10_ARG
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+    from config import C10_ARG
 
     runner = pyperf.Runner()
     runner.metadata['description'] = "DeltaBlue benchmark"
