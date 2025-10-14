@@ -11,6 +11,7 @@ from Plugins.Profilers.EnergiBridge import EnergiBridge
 from typing import Dict, Any, Optional
 from pathlib import Path
 from os.path import dirname, realpath
+import statistics, math
 
 
 class RunnerConfig:
@@ -32,7 +33,7 @@ class RunnerConfig:
 
     """The time Experiment Runner will wait after a run completes.
     This can be essential to accommodate for cooldown periods on some systems."""
-    time_between_runs_in_ms:    int             = 1000
+    time_between_runs_in_ms:    int             = 2000
 
     # Dynamic configurations can be one-time satisfied here before the program takes the config as-is
     # e.g. Setting some variable based on some criteria
@@ -58,17 +59,18 @@ class RunnerConfig:
         """Create and return the run_table model here. A run_table is a List (rows) of tuples (columns),
         representing each run performed"""
         print()
-        # factor1 = FactorModel("guideline", ['G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G18', 'G19'])
-        factor1 = FactorModel("guideline", ['G18'])
-        # factor2 = FactorModel("code", [f'C{i}' for i in range(1, 11)])
-        factor2 = FactorModel("code", ['C1'])
+        factor1 = FactorModel("guideline", ['G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G18', 'G19'])
+        # factor1 = FactorModel("guideline", ['G18'])
+        factor2 = FactorModel("code", [f'C{i}' for i in range(1, 11)])
+        # factor2 = FactorModel("code", ['C1'])
         factor3 = FactorModel("treatment", ['guideline', 'no_guideline'])
-        factor4 = FactorModel("run_number", [f'r{i}' for i in range(1, 11)])
+        factor4 = FactorModel("run_number", [f'r{i}' for i in range(1, 2)])
         # factor5 = FactorModel("problem_size", [None])
         self.run_table_model = RunTableModel(
             factors=[factor1, factor2, factor3, factor4],
             repetitions = 1,
-            data_columns=['execution_time', 'cpu_usage', 'memory_usage', 'energy_usage']
+            data_columns=['execution_time', 'cpu_usage', 'memory_usage', 'average_power (Watts)', 'energy_usage'],
+            shuffle = False,
         )
         return self.run_table_model
 
@@ -96,7 +98,7 @@ class RunnerConfig:
         treatment = context.execute_run["treatment"]
         
         self.profiler = EnergiBridge(target_program=f"python3 benchmarks/{guideline}/{code}/{treatment}.py",
-                                     out_file=context.run_dir / "energibridge.csv")
+                                     out_file=context.run_dir / f"{guideline}_{code}_{treatment}_energibridge.csv")
 
         self.profiler.start()
 
@@ -120,14 +122,18 @@ class RunnerConfig:
         
         eb_log, _ = self.profiler.parse_log(self.profiler.logfile, 
                                                      self.profiler.summary_logfile)
-        
-        cpu_usage = [max(eb_log[f"CPU_USAGE_{i}"].values()) for i in range(1, 8)]
-        
+        # cpu_usage = [max(eb_log[f"CPU_USAGE_{i}"].values()) for i in range(1, 8)]
+
+        cpu_usage = [statistics.mean(filter(lambda x: not math.isnan(x), eb_log[f"CPU_USAGE_{i}"].values())) for i in range(1, 8)]
+        execution_time = (self.timestamp_end - self.timestamp_start).total_seconds()
+        avarage_power = statistics.mean(list(eb_log["SYSTEM_POWER (Watts)"].values()))
+        energy_usage = avarage_power * execution_time
         return {
-            "execution_time": (self.timestamp_end - self.timestamp_start).total_seconds(),
-            "cpu_usage": max(cpu_usage),
+            "execution_time": execution_time,
+            "cpu_usage": statistics.mean(cpu_usage),
             "memory_usage": max(eb_log["USED_MEMORY"].values()),
-            "energy_usage": list(eb_log["SYSTEM_POWER (Watts)"].values())[-1] - list(eb_log["SYSTEM_POWER (Watts)"].values())[0],
+            "average_power (Watts)": avarage_power,
+            "energy_usage": energy_usage
         }
 
     def after_experiment(self) -> None:
