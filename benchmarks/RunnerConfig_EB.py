@@ -96,6 +96,7 @@ class RunnerConfig:
         # problem_size = context.execute_run["problem_size"]
         code = context.execute_run["code"]
         treatment = context.execute_run["treatment"]
+        print(f"Starting measurement for {guideline}, {code}, {treatment}")
         
         self.profiler = EnergiBridge(target_program=f"python3 benchmarks/{guideline}/{code}/{treatment}.py",
                                      out_file=context.run_dir / f"{guideline}_{code}_{treatment}_energibridge.csv")
