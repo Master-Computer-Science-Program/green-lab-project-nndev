@@ -19,7 +19,9 @@ class Solution:
         return self.binary_search(0, len(nums) - 1, nums, target)
     
 if __name__ == "__main__":
-    from benchmarks.G2.config import C1_ARG
+    import sys, os
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+    from config import C1_ARG
 
     s = Solution()
     for _ in range(15000000):

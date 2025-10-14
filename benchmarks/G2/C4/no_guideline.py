@@ -16,7 +16,9 @@ class Solution:
         return l
     
 if __name__ == "__main__":
-    from benchmarks.G2.config import C4_ARG
+    import sys, os
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+    from config import C4_ARG
 
     s = Solution()
     for _ in range(3): #1500000

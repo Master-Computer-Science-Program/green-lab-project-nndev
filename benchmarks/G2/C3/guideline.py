@@ -17,7 +17,9 @@ if __name__ == "__main__":
     # s = Solution()
     # print(s.merge(ast.literal_eval(sys.argv[1]), int(sys.argv[2]), ast.literal_eval(sys.argv[3]), int(sys.argv[4])))
 
-    from benchmarks.G2.config import C3_ARG
+    import sys, os
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+    from config import C3_ARG
 
     s = Solution()
     for _ in range(80000000):

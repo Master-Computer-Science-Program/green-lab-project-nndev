@@ -13,6 +13,7 @@ because they're "old".
 # Python imports
 import re
 import time
+import sys, os
 
 USE_BYTES = False
 
@@ -137,6 +138,7 @@ bench_regex_effbot.data = None
 
 if __name__ == '__main__':
     # Simple execution without pyperf
-    from benchmarks.G1.config import C5_ARG
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+    from config import C5_ARG
     USE_BYTES = False  # change to True to test with bytes
     elapsed = bench_regex_effbot(C5_ARG[0])

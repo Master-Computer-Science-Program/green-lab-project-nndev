@@ -9,7 +9,7 @@
 import sys, os
 import multiprocessing as mp
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from benchmarks.G1.config import C7_ARG
+from config import C7_ARG
 
 
 def make_tree(d):

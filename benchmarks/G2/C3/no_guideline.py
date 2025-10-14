@@ -20,7 +20,9 @@ class Solution:
             last -= 1
 
 if __name__ == "__main__":
-    from benchmarks.G2.config import C3_ARG
+    import sys, os
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+    from config import C3_ARG
 
     s = Solution()
     for _ in range(80000000):
