@@ -1,0 +1,227 @@
+# An Empirical Study on the Execution Time and Performance of Python code using Python Energy Efficiency Guidelines -- NNDEV
+
+## Setup (Installations)
+```{r, results='hide', message=FALSE}
+install.packages(c("tidyverse", "ggplot2", "bestNormalize", "ARTool", "lmerTest", "xtable"))
+library(tidyverse)
+library(ggplot2)
+library(bestNormalize)
+library(ARTool)
+library(lmerTest)
+library(xtable)
+```
+
+## 1. Data Loading and Inspection
+
+```{r}
+setwd("/Users/nhimai/Documents/MCs/Green-Lab/green-lab-project-nndev/data-analysis")
+dat_data <- read.csv("../benchmarks/experiments/python_guidelines_20251015_152255/run_table.csv") %>%
+  select(guideline, code, treatment, run_number, execution_time, execution_time, cpu_usage, memory_usage) %>%
+  mutate(
+    guideline = factor(guideline),
+    code = factor(code),
+    treatment = factor(treatment),
+    run_number = factor(run_number)
+  )
+
+dat_data <- dat_data %>%
+  filter(!is.na(execution_time) & !is.na(guideline) & !is.na(treatment))
+
+glimpse(dat_data)
+summary(dat_data)
+head(dat_data)
+```
+
+## 2. Visual Exploration via Plotting
+
+### 2.1. Histogram of execution_time
+
+### 2.1.1. Overall
+
+```{r}
+ggplot(dat_data, aes(x = execution_time)) +
+  geom_histogram(bins = 30, fill = "skyblue", color = "black", alpha = 0.7) +
+  theme_minimal() +
+  labs(
+    title = "Histogram of Execution Time",
+    x = "Execution Time",
+    y = "Frequency"
+  )
+```
+
+#### 2.1.2. Split by treatment
+```{r}
+ggplot(dat_data, aes(x = execution_time, fill = treatment)) +
+  geom_histogram(bins = 30, alpha = 0.6, position = "identity") +
+  facet_wrap(~ guideline, scales = "free_x") +
+  theme_minimal() +
+  labs(
+    title = "Execution Time Distribution by Treatment",
+    x = "Execution Time",
+    y = "Frequency",
+    fill = "Treatment"
+  )
+```
+
+### 2.2. Box plot of execution_time grouped by treatment and guideline
+```{r}
+ggplot(dat_data, aes(x = treatment, y = execution_time, fill=guideline)) +
+  geom_boxplot(alpha = 0.7) +
+  theme_minimal() +
+  labs(
+    title = "Execution Time by Treatment",
+    x = "Treatment",
+    y = "Execution Time",
+    fill = "Guideline"
+  )
+```
+
+#### 2.3. Scatterplots of execution_time across trials: define "experiment" as guideline + treatment
+```{r}
+dat_data <- dat_data %>%
+  mutate(
+    experiment = interaction(guideline, treatment),
+    run_number = factor(run_number, levels = paste0("r", 1:15), ordered = TRUE)
+    )
+
+ggplot(dat_data, aes(x = run_number, y = execution_time, color = experiment)) +
+  geom_point(alpha = 0.8, size = 2) +
+  theme_minimal() +
+  labs(
+    title = "Execution Time Across Runs",
+    x = "Run Number",
+    y = "Execution Time",
+    color = "Experiment"
+  )
+```
+
+
+## 3. Data Normality and Normalization
+
+### 3.1. Shapiro-Wilk test
+```{r}
+# Run Shapiro-Wilk for each group
+normality_results <- dat_data %>%
+  group_by(guideline, treatment) %>%
+  summarise(
+    shapiro_p = shapiro.test(execution_time)$p.value,
+    .groups = "drop"
+  )
+
+normality_results
+```
+
+- Interpretation: if p < 0.05, reject normality (data is not normal).
+
+### 3.2. Normalize the execution_time column
+```{r}
+bn <- bestNormalize(dat_data$execution_time)
+dat_data$norm_execution_time <- bn$x.t
+```
+
+### 3.3. Visualization of normalized data and repeat normality tests
+
+#### 3.3.1. Histogram of normalized data
+```{r}
+ggplot(dat_data, aes(x = norm_execution_time)) +
+  geom_histogram(bins = 30, fill = "lightgreen", color = "black") +
+  theme_minimal() +
+  labs(
+    title = "Histogram of Normalized Execution Time",
+    x = "Normalized Execution Time",
+    y = "Frequency"
+  )
+```
+
+#### 3.3.2. Shapiro-Wilk again for normalized values
+```{r}
+normality_results_norm <- dat_data %>%
+  group_by(guideline, treatment) %>%
+  summarise(
+    shapiro_p = shapiro.test(norm_execution_time)$p.value,
+    .groups = "drop"
+  )
+
+normality_results_norm
+```
+- If most *shapiro_p* values after normalization are greater than 0.05, then distributions can be considered normal, and parametric tests (t-test) are justified.
+- If many are still below 0.05, non-parametric test (Wilcoxon) will be the case.
+
+## 4. Non-parametric test
+
+### 4.1. Wilcoxon’s test
+
+#### Compare entire set
+```{r, results='hide', message=FALSE}
+all_no_guideline_j = dat_data[dat_data$treatment == 'no_guideline',]$execution_time
+all_guideline_j = dat_data[dat_data$treatment == 'guideline',]$execution_time
+wilcox.test(all_no_guideline_j, all_guideline_j)
+
+# g1_no_guideline = dat_data[dat_data$treatment == 'no_guideline' & dat_data$guideline == 'G1',]$execution_time
+# g1_guideline = dat_data[dat_data$treatment == 'guideline' & dat_data$guideline == 'G1',]$execution_time
+# wilcox.test(g1_no_guideline, g1_guideline)
+```
+
+#### Compare different treatments in terms of guidelines
+```{r}
+guidelines <- unique(dat_data$guideline)
+wilcox_results <- map_dfr(guidelines, function(g) {
+  subset_data <- dat_data %>% filter(guideline == g)
+  
+  no_guideline_j <- subset_data %>% filter(treatment == "no_guideline") %>% pull(execution_time)
+  guideline_j     <- subset_data %>% filter(treatment == "guideline") %>% pull(execution_time)
+  
+  test_result <- wilcox.test(no_guideline_j, guideline_j)
+  
+  tibble(
+    guideline = g,
+    p_value = test_result$p.value,
+    statistic = test_result$statistic,
+    method = test_result$method
+  )
+})
+
+print(wilcox_results)
+```
+
+### 4.2. ART (Aligned Rank Transform) model
+```{r}
+art_model <- art(execution_time ~ guideline * treatment + (1|run_number), data = dat_data)
+summary(art_model)
+```
+
+### 4.3. LMER model
+```{r, results='hide', message=FALSE}
+lmer_model = lmer(execution_time ~ guideline * treatment + (1|run_number), data = dat_data)
+summary(lmer_model)
+anova(lmer_model)
+```
+
+### 4.4. Check residuals for normality
+```{r}
+res_model <- resid(model)
+qqnorm(res_model)
+qqline(res_model, col = "red", lwd = 2)
+shapiro.test(res_model)
+```
+
+## 5. Summary plot
+
+## 5.1. Boxplot of execution_time by code, faceted by guideline
+```{r}
+ggplot(dat_data, aes(x = as.factor(code), y = execution_time)) +
+  geom_boxplot(fill = "skyblue", color = "darkblue") +
+  facet_wrap(~ guideline, scales = "free") +
+  labs(x = "Code", y = "Execution Time", title = "Execution Time Distribution by Code") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+## 5.3. Scatter plot of execution_time over run_number, colored by guideline
+```{r}
+ggplot(dat_data, aes(x = run_number, y = execution_time, color = guideline)) +
+  geom_point(alpha = 0.7, size = 2) +
+  labs(x = "Run Number", y = "Execution Time", title = "Execution Time over Run Number") +
+  theme_minimal() +
+  theme(legend.position = "right")
+```

@@ -1,0 +1,57 @@
+# Annotated Tables
+
+## Setup (Installations)
+```{r, results='hide', message=FALSE}
+install.packages(c("tidyverse", "ggplot2", "bestNormalize", "ARTool", "lmerTest", "xtable"))
+library(tidyverse)
+library(ggplot2)
+library(bestNormalize)
+library(ARTool)
+library(lmerTest)
+library(xtable)
+```
+
+## Data Loading and Inspection
+
+```{r}
+setwd("/Users/nhimai/Documents/MCs/Green-Lab/green-lab-project-nndev/data-analysis")
+dat_data <- read.csv("../benchmarks/experiments/python_guidelines_20251015_152255/run_table.csv") %>%
+  select(guideline, code, treatment, run_number, energy_usage, execution_time, cpu_usage, memory_usage) %>%
+  mutate(
+    guideline = factor(guideline),
+    code = factor(code),
+    treatment = factor(treatment),
+    run_number = factor(run_number)
+  )
+
+dat_data <- dat_data %>%
+  filter(!is.na(energy_usage) & !is.na(guideline) & !is.na(treatment))
+
+glimpse(dat_data)
+summary(dat_data)
+head(dat_data)
+```
+
+## Calculate the average cpu_usage, memory_usage and energy_usage for each "experiment"
+```{r}
+experiment_averages <- dat_data %>%
+  group_by(guideline, treatment) %>%   # define the experiment
+  summarise(
+    avg_cpu = mean(cpu_usage, na.rm = TRUE),
+    avg_memory = mean(memory_usage, na.rm = TRUE),
+    avg_energy = mean(energy_usage, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+experiment_averages
+```
+
+## Export table to LaTeX format
+```{r}
+latex_table <- xtable(experiment_averages,
+                    caption = "Average CPU, Memory, and Energy Usage per Experiment",
+                    label = "tab:experiment_averages",
+                    digits = c(0, 0, 0, 0, 0, 0))
+
+print(latex_table, type = "latex", include.rownames = FALSE)
+```
