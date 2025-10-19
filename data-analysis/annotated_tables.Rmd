@@ -15,7 +15,7 @@ library(xtable)
 
 ```{r}
 setwd("/Users/nhimai/Documents/MCs/Green-Lab/green-lab-project-nndev/data-analysis")
-dat_data <- read.csv("../benchmarks/experiments/python_guidelines_20251015_152255/run_table.csv") %>%
+dat_data <- read.csv("../benchmarks/experiments/run_table.csv") %>%
   select(guideline, code, treatment, run_number, energy_usage, execution_time, cpu_usage, memory_usage) %>%
   mutate(
     guideline = factor(guideline),
