@@ -1,0 +1,60 @@
+================================================
+  NLOC    CCN   token  PARAM  length  location  
+------------------------------------------------
+      30      8    255      1      77 counting_sort@13-89@benchmarks/G2/C7/no_guideline.py
+       2      3     34      1       6 counting_sort_string@94-99@benchmarks/G2/C7/no_guideline.py
+      17      5    136      1      45 counting_sort@13-57@benchmarks/G2/C7/guideline.py
+       2      3     34      1       6 counting_sort_string@60-65@benchmarks/G2/C7/guideline.py
+      17      5    117      1      47 cyclic_sort@19-65@benchmarks/G2/C9/no_guideline.py
+       9      3     66      1      32 cyclic_sort@19-50@benchmarks/G2/C9/guideline.py
+      13     10    139      1      40 quick_sort@14-53@benchmarks/G2/C8/no_guideline.py
+       8      6     79      1      28 quick_sort@16-43@benchmarks/G2/C8/guideline.py
+       9      4     92      5      10 binary_search@6-15@benchmarks/G2/C1/no_guideline.py
+       3      1     41      3       3 search@17-19@benchmarks/G2/C1/no_guideline.py
+       9      4     92      5      10 binary_search@4-13@benchmarks/G2/C1/guideline.py
+       2      1     36      3       2 search@15-16@benchmarks/G2/C1/guideline.py
+      11      3    112      2      14 sortedSquares@6-19@benchmarks/G2/C6/no_guideline.py
+      10      3    107      2      12 sortedSquares@6-17@benchmarks/G2/C6/guideline.py
+      13      4    106      5      16 merge@5-20@benchmarks/G2/C3/no_guideline.py
+      11      4     96      5      13 merge@2-14@benchmarks/G2/C3/guideline.py
+       8      3     63      2      12 removeDuplicates@5-16@benchmarks/G2/C4/no_guideline.py
+       7      3     57      2      10 removeDuplicates@5-14@benchmarks/G2/C4/guideline.py
+       9      4     85      1      53 bubble_sort_iterative@7-59@benchmarks/G2/C10/no_guideline.py
+       8      4     84      1      50 bubble_sort_recursive@62-111@benchmarks/G2/C10/no_guideline.py
+      11      5     90      1      51 bubble_sort_iterative@8-58@benchmarks/G2/C10/guideline.py
+       8      4     84      1      50 bubble_sort_recursive@61-110@benchmarks/G2/C10/guideline.py
+      14      2     91      3      16 findMedianSortedArrays@6-21@benchmarks/G2/C5/no_guideline.py
+      10      2     69      3      11 findMedianSortedArrays@6-16@benchmarks/G2/C5/guideline.py
+       7      4     79      3       7 twoSum@6-12@benchmarks/G2/C2/no_guideline.py
+       6      4     73      3       6 twoSum@4-9@benchmarks/G2/C2/guideline.py
+20 file analyzed.
+==============================================================
+NLOC    Avg.NLOC  AvgCCN  Avg.token  function_cnt    file
+--------------------------------------------------------------
+     38      16.0     5.5      144.5         2     benchmarks/G2/C7/no_guideline.py
+     25       9.5     4.0       85.0         2     benchmarks/G2/C7/guideline.py
+     24      17.0     5.0      117.0         1     benchmarks/G2/C9/no_guideline.py
+     16       9.0     3.0       66.0         1     benchmarks/G2/C9/guideline.py
+     21      13.0    10.0      139.0         1     benchmarks/G2/C8/no_guideline.py
+     17       8.0     6.0       79.0         1     benchmarks/G2/C8/guideline.py
+     23       6.0     2.5       66.5         2     benchmarks/G2/C1/no_guideline.py
+     20       5.5     2.5       64.0         2     benchmarks/G2/C1/guideline.py
+     22      11.0     3.0      112.0         1     benchmarks/G2/C6/no_guideline.py
+     21      10.0     3.0      107.0         1     benchmarks/G2/C6/guideline.py
+     23      13.0     4.0      106.0         1     benchmarks/G2/C3/no_guideline.py
+     19      11.0     4.0       96.0         1     benchmarks/G2/C3/guideline.py
+     18       8.0     3.0       63.0         1     benchmarks/G2/C4/no_guideline.py
+     17       7.0     3.0       57.0         1     benchmarks/G2/C4/guideline.py
+     25       8.5     4.0       84.5         2     benchmarks/G2/C10/no_guideline.py
+     27       9.5     4.5       87.0         2     benchmarks/G2/C10/guideline.py
+     25      14.0     2.0       91.0         1     benchmarks/G2/C5/no_guideline.py
+     21      10.0     2.0       69.0         1     benchmarks/G2/C5/guideline.py
+     18       7.0     4.0       79.0         1     benchmarks/G2/C2/no_guideline.py
+     15       6.0     4.0       73.0         1     benchmarks/G2/C2/guideline.py
+
+===============================================================================================================
+No thresholds exceeded (cyclomatic_complexity > 15 or length > 1000 or nloc > 1000000 or parameter_count > 100)
+==========================================================================================
+Total nloc   Avg.NLOC  AvgCCN  Avg.token   Fun Cnt  Warning cnt   Fun Rt   nloc Rt
+------------------------------------------------------------------------------------------
+       435       9.8     3.9       89.1       26            0      0.00    0.00

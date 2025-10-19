@@ -1,0 +1,84 @@
+================================================
+  NLOC    CCN   token  PARAM  length  location  
+------------------------------------------------
+       2      1     30      2      13 or_gate@7-19@benchmarks/G19/C7/no_guideline.py
+      18      9    120      1      49 decimal_to_binary_iterative@9-57@benchmarks/G19/C9/no_guideline.py
+       6      2     50      1      17 decimal_to_binary_recursive_helper@60-76@benchmarks/G19/C9/no_guideline.py
+       9      4     65      1      28 decimal_to_binary_recursive@79-106@benchmarks/G19/C9/no_guideline.py
+      16      7    101      1      46 decimal_to_binary_iterative@9-54@benchmarks/G19/C9/guideline.py
+       6      2     50      1      17 decimal_to_binary_recursive_helper@57-73@benchmarks/G19/C9/guideline.py
+       9      4     65      1      28 decimal_to_binary_recursive@76-103@benchmarks/G19/C9/guideline.py
+      13      7     90      1      37 bin_to_decimal@7-43@benchmarks/G19/C8/no_guideline.py
+      14      7     93      1      38 bin_to_decimal@8-45@benchmarks/G19/C8/guideline.py
+       7      3     51      1       7 combinations@13-19@benchmarks/G19/C1/no_guideline.py
+      20      4    196      4      21 advance@65-85@benchmarks/G19/C1/no_guideline.py
+      10      3    135      3      11 report_energy@88-98@benchmarks/G19/C1/no_guideline.py
+       9      2     92      5      10 offset_momentum@100-109@benchmarks/G19/C1/no_guideline.py
+       5      1     30      2       5 main@111-115@benchmarks/G19/C1/no_guideline.py
+       7      3     51      1       7 combinations@13-19@benchmarks/G19/C1/guideline.py
+      10      3    135      3      11 report_energy@64-74@benchmarks/G19/C1/guideline.py
+      37      5    293      2      41 main@76-116@benchmarks/G19/C1/guideline.py
+       2      2     21      2      14 and_gate@7-20@benchmarks/G19/C6/no_guideline.py
+       2      1     21      1      10 n_input_and_gate@23-32@benchmarks/G19/C6/no_guideline.py
+       2      2     18      1      10 not_gate@18-27@benchmarks/G19/C3/no_guideline.py
+       8      3     50      2      27 actual_power@8-34@benchmarks/G19/C4/no_guideline.py
+       4      2     36      2      20 power@37-56@benchmarks/G19/C4/no_guideline.py
+       8      3     50      2      27 actual_power@8-34@benchmarks/G19/C4/guideline.py
+       2      1     34      2      26 celsius_to_fahrenheit@8-33@benchmarks/G19/C10/no_guideline.py
+       2      1     30      2      22 celsius_to_kelvin@36-57@benchmarks/G19/C10/no_guideline.py
+       2      1     36      2      22 celsius_to_rankine@60-81@benchmarks/G19/C10/no_guideline.py
+       2      1     34      2      28 fahrenheit_to_celsius@84-111@benchmarks/G19/C10/no_guideline.py
+       2      1     40      2      28 fahrenheit_to_kelvin@114-141@benchmarks/G19/C10/no_guideline.py
+       2      1     30      2      28 fahrenheit_to_rankine@144-171@benchmarks/G19/C10/no_guideline.py
+       2      1     30      2      22 kelvin_to_celsius@174-195@benchmarks/G19/C10/no_guideline.py
+       2      1     40      2      22 kelvin_to_fahrenheit@198-219@benchmarks/G19/C10/no_guideline.py
+       2      1     32      2      22 kelvin_to_rankine@222-243@benchmarks/G19/C10/no_guideline.py
+       2      1     36      2      22 rankine_to_celsius@246-267@benchmarks/G19/C10/no_guideline.py
+       2      1     30      2      18 rankine_to_fahrenheit@270-287@benchmarks/G19/C10/no_guideline.py
+       2      1     32      2      18 rankine_to_kelvin@290-307@benchmarks/G19/C10/no_guideline.py
+       2      1     36      2      17 reaumur_to_kelvin@310-326@benchmarks/G19/C10/no_guideline.py
+       2      1     34      2      17 reaumur_to_fahrenheit@329-345@benchmarks/G19/C10/no_guideline.py
+       2      1     32      2      17 reaumur_to_celsius@348-364@benchmarks/G19/C10/no_guideline.py
+       2      1     38      2      17 reaumur_to_rankine@367-383@benchmarks/G19/C10/no_guideline.py
+       5      2     31      1       6 make_tree@15-20@benchmarks/G19/C5/no_guideline.py
+       6      2     33      1       7 check_tree@23-29@benchmarks/G19/C5/no_guideline.py
+       3      1     18      1       4 make_check@32-35@benchmarks/G19/C5/no_guideline.py
+      10      4     69      3      11 get_argchunks@38-48@benchmarks/G19/C5/no_guideline.py
+      21      4    153      2      26 main@51-76@benchmarks/G19/C5/no_guideline.py
+       5      2     31      1       6 make_tree@15-20@benchmarks/G19/C5/guideline.py
+       6      2     33      1       7 check_tree@23-29@benchmarks/G19/C5/guideline.py
+       3      1     26      3       4 make_check@32-35@benchmarks/G19/C5/guideline.py
+      10      4     69      3      11 get_argchunks@38-48@benchmarks/G19/C5/guideline.py
+      21      4    153      2      26 main@51-76@benchmarks/G19/C5/guideline.py
+       4      1     68      2      23 rectangular_to_polar@8-30@benchmarks/G19/C2/no_guideline.py
+20 file analyzed.
+==============================================================
+NLOC    Avg.NLOC  AvgCCN  Avg.token  function_cnt    file
+--------------------------------------------------------------
+     11       2.0     1.0       30.0         1     benchmarks/G19/C7/no_guideline.py
+     12       0.0     0.0        0.0         0     benchmarks/G19/C7/guideline.py
+     42      11.0     5.0       78.3         3     benchmarks/G19/C9/no_guideline.py
+     43      10.3     4.3       72.0         3     benchmarks/G19/C9/guideline.py
+     23      13.0     7.0       90.0         1     benchmarks/G19/C8/no_guideline.py
+     27      14.0     7.0       93.0         1     benchmarks/G19/C8/guideline.py
+     91      10.2     2.6      100.8         5     benchmarks/G19/C1/no_guideline.py
+     94      18.0     3.7      159.7         3     benchmarks/G19/C1/guideline.py
+     16       2.0     1.5       21.0         2     benchmarks/G19/C6/no_guideline.py
+     15       0.0     0.0        0.0         0     benchmarks/G19/C6/guideline.py
+     10       2.0     2.0       18.0         1     benchmarks/G19/C3/no_guideline.py
+     12       0.0     0.0        0.0         0     benchmarks/G19/C3/guideline.py
+     24       6.0     2.5       43.0         2     benchmarks/G19/C4/no_guideline.py
+     23       8.0     3.0       50.0         1     benchmarks/G19/C4/guideline.py
+     55       2.0     1.0       34.0        16     benchmarks/G19/C10/no_guideline.py
+     27       0.0     0.0        0.0         0     benchmarks/G19/C10/guideline.py
+     51       9.0     2.6       60.8         5     benchmarks/G19/C5/no_guideline.py
+     55       9.0     2.6       62.4         5     benchmarks/G19/C5/guideline.py
+     13       4.0     1.0       68.0         1     benchmarks/G19/C2/no_guideline.py
+     13       0.0     0.0        0.0         0     benchmarks/G19/C2/guideline.py
+
+===============================================================================================================
+No thresholds exceeded (cyclomatic_complexity > 15 or length > 1000 or nloc > 1000000 or parameter_count > 100)
+==========================================================================================
+Total nloc   Avg.NLOC  AvgCCN  Avg.token   Fun Cnt  Warning cnt   Fun Rt   nloc Rt
+------------------------------------------------------------------------------------------
+       657       7.0     2.5       61.4       50            0      0.00    0.00
