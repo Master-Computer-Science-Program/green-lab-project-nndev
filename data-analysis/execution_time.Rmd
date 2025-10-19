@@ -15,8 +15,8 @@ library(xtable)
 
 ```{r}
 setwd("/Users/nhimai/Documents/MCs/Green-Lab/green-lab-project-nndev/data-analysis")
-dat_data <- read.csv("../benchmarks/experiments/python_guidelines_20251015_152255/run_table.csv") %>%
-  select(guideline, code, treatment, run_number, execution_time, execution_time, cpu_usage, memory_usage) %>%
+dat_data <- read.csv("../benchmarks/experiments/run_table.csv") %>%
+  select(guideline, code, treatment, run_number, execution_time, execution_time, execution_time, memory_usage) %>%
   mutate(
     guideline = factor(guideline),
     code = factor(code),
@@ -39,7 +39,7 @@ head(dat_data)
 ### 2.1.1. Overall
 
 ```{r}
-ggplot(dat_data, aes(x = execution_time)) +
+p <- ggplot(dat_data, aes(x = execution_time)) +
   geom_histogram(bins = 30, fill = "skyblue", color = "black", alpha = 0.7) +
   theme_minimal() +
   labs(
@@ -47,11 +47,13 @@ ggplot(dat_data, aes(x = execution_time)) +
     x = "Execution Time",
     y = "Frequency"
   )
+
+ggsave("figures/execution_time_histogram.png", plot = p, width = 8, height = 6, dpi = 300)
 ```
 
 #### 2.1.2. Split by treatment
 ```{r}
-ggplot(dat_data, aes(x = execution_time, fill = treatment)) +
+p <- ggplot(dat_data, aes(x = execution_time, fill = treatment)) +
   geom_histogram(bins = 30, alpha = 0.6, position = "identity") +
   facet_wrap(~ guideline, scales = "free_x") +
   theme_minimal() +
@@ -61,11 +63,14 @@ ggplot(dat_data, aes(x = execution_time, fill = treatment)) +
     y = "Frequency",
     fill = "Treatment"
   )
+
+
+ggsave("figures/execution_time_histogram_by_treatment.png", plot = p, width = 8, height = 6, dpi = 300)
 ```
 
 ### 2.2. Box plot of execution_time grouped by treatment and guideline
 ```{r}
-ggplot(dat_data, aes(x = treatment, y = execution_time, fill=guideline)) +
+p <- ggplot(dat_data, aes(x = treatment, y = execution_time, fill=guideline)) +
   geom_boxplot(alpha = 0.7) +
   theme_minimal() +
   labs(
@@ -74,6 +79,9 @@ ggplot(dat_data, aes(x = treatment, y = execution_time, fill=guideline)) +
     y = "Execution Time",
     fill = "Guideline"
   )
+
+
+ggsave("figures/execution_time_box_plot.png", plot = p, width = 8, height = 6, dpi = 300)
 ```
 
 #### 2.3. Scatterplots of execution_time across trials: define "experiment" as guideline + treatment
@@ -81,10 +89,10 @@ ggplot(dat_data, aes(x = treatment, y = execution_time, fill=guideline)) +
 dat_data <- dat_data %>%
   mutate(
     experiment = interaction(guideline, treatment),
-    run_number = factor(run_number, levels = paste0("r", 1:15), ordered = TRUE)
+    run_number = factor(run_number, levels = paste0("r", 1:20), ordered = TRUE)
     )
 
-ggplot(dat_data, aes(x = run_number, y = execution_time, color = experiment)) +
+p <- ggplot(dat_data, aes(x = run_number, y = execution_time, color = experiment)) +
   geom_point(alpha = 0.8, size = 2) +
   theme_minimal() +
   labs(
@@ -93,6 +101,8 @@ ggplot(dat_data, aes(x = run_number, y = execution_time, color = experiment)) +
     y = "Execution Time",
     color = "Experiment"
   )
+
+ggsave("figures/execution_time_scatterplot.png", plot = p, width = 8, height = 6, dpi = 300)
 ```
 
 
