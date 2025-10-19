@@ -1,0 +1,118 @@
+================================================
+  NLOC    CCN   token  PARAM  length  location  
+------------------------------------------------
+       2      1     58      3       2 gaussian@8-9@benchmarks/G5/C7/no_guideline.py
+      10      3     58      2      13 squareRoot@7-19@benchmarks/G5/C7/guideline.py
+       8      2     47      2       8 exp@21-28@benchmarks/G5/C7/guideline.py
+       2      1     62      3       2 gaussian@30-31@benchmarks/G5/C7/guideline.py
+       6      3     44      2      20 speed_of_sound_in_a_fluid@25-44@benchmarks/G5/C9/no_guideline.py
+       6      3     48      2       8 speed_of_sound_in_a_fluid@24-31@benchmarks/G5/C9/guideline.py
+       6      2     52      2      45 escape_velocity@5-49@benchmarks/G5/C8/no_guideline.py
+      10      3     58      2      13 squareRoot@3-15@benchmarks/G5/C8/guideline.py
+       6      2     49      2       8 escape_velocity@18-25@benchmarks/G5/C8/guideline.py
+       7      3     51      1       7 combinations@13-19@benchmarks/G5/C1/no_guideline.py
+      20      4    196      4      21 advance@65-85@benchmarks/G5/C1/no_guideline.py
+      10      3    135      3      11 report_energy@88-98@benchmarks/G5/C1/no_guideline.py
+       9      2     92      5      10 offset_momentum@100-109@benchmarks/G5/C1/no_guideline.py
+       5      1     30      2       5 main@111-115@benchmarks/G5/C1/no_guideline.py
+       7      3     51      1       7 combinations@13-19@benchmarks/G5/C1/guideline.py
+      20      4    196      4      21 advance@57-77@benchmarks/G5/C1/guideline.py
+      10      3    135      3      11 report_energy@80-90@benchmarks/G5/C1/guideline.py
+       9      2     92      5      10 offset_momentum@92-101@benchmarks/G5/C1/guideline.py
+       5      1     30      2       5 main@103-107@benchmarks/G5/C1/guideline.py
+       2      1     27      2       2 eval_A@17-18@benchmarks/G5/C6/no_guideline.py
+       2      2     31      2       2 eval_times_u@21-22@benchmarks/G5/C6/no_guideline.py
+       2      1     17      1       2 eval_AtA_times_u@25-26@benchmarks/G5/C6/no_guideline.py
+       6      2     35      1       6 part_A_times_u@29-34@benchmarks/G5/C6/no_guideline.py
+       6      2     35      1       6 part_At_times_u@37-42@benchmarks/G5/C6/no_guideline.py
+       9      3     59      1      12 bench_spectral_norm@45-56@benchmarks/G5/C6/no_guideline.py
+       2      1     28      2       2 eval_A@17-18@benchmarks/G5/C6/guideline.py
+       2      2     31      2       2 eval_times_u@21-22@benchmarks/G5/C6/guideline.py
+       2      1     17      1       2 eval_AtA_times_u@25-26@benchmarks/G5/C6/guideline.py
+       6      2     35      1       6 part_A_times_u@29-34@benchmarks/G5/C6/guideline.py
+       6      2     35      1       6 part_At_times_u@37-42@benchmarks/G5/C6/guideline.py
+       9      3     59      1      12 bench_spectral_norm@45-56@benchmarks/G5/C6/guideline.py
+       2      2     20      2       2 maxPoints.gcd@12-13@benchmarks/G5/C3/no_guideline.py
+      17      4    147      2      20 maxPoints@8-27@benchmarks/G5/C3/no_guideline.py
+       2      2     20      2       2 maxPoints.gcd@14-15@benchmarks/G5/C3/guideline.py
+      14      4    141      2      17 maxPoints@10-26@benchmarks/G5/C3/guideline.py
+       3      1     26      2       3 isPerfectSquare@7-9@benchmarks/G5/C4/no_guideline.py
+       5      2     35      2       5 isPerfectSquare@6-10@benchmarks/G5/C4/guideline.py
+      29      7    258      5      30 rotate@14-43@benchmarks/G5/C10/no_guideline.py
+      29      7    260      5      30 rotate@14-43@benchmarks/G5/C10/guideline.py
+       4      1     32      4       4 __init__@23-26@benchmarks/G5/C5/no_guideline.py
+       2      1     28      1       2 Mag@28-29@benchmarks/G5/C5/no_guideline.py
+       4      1     48      2       4 dist@31-34@benchmarks/G5/C5/no_guideline.py
+       5      2     59      2       5 __add__@36-40@benchmarks/G5/C5/no_guideline.py
+       2      1     14      2       2 __sub__@42-43@benchmarks/G5/C5/no_guideline.py
+       3      1     31      2       3 __mul__@45-47@benchmarks/G5/C5/no_guideline.py
+       7      2     65      4       7 linear_combination@50-56@benchmarks/G5/C5/no_guideline.py
+       2      1     21      1       2 __str__@58-59@benchmarks/G5/C5/no_guideline.py
+       2      1     21      1       2 __repr__@61-62@benchmarks/G5/C5/no_guideline.py
+      13      5     95      4      17 __init__@68-84@benchmarks/G5/C5/no_guideline.py
+       3      1     35      1       4 GetDomain@86-89@benchmarks/G5/C5/no_guideline.py
+      21      8    229      2      22 __call__@91-112@benchmarks/G5/C5/no_guideline.py
+       9      4     74      2       9 GetIndex@114-122@benchmarks/G5/C5/no_guideline.py
+       2      1     12      1       2 __len__@124-125@benchmarks/G5/C5/no_guideline.py
+       2      1     21      1       2 __repr__@127-128@benchmarks/G5/C5/no_guideline.py
+      13      3    110      2      14 write_ppm@131-144@benchmarks/G5/C5/no_guideline.py
+      21     11    230      3      21 __init__@149-169@benchmarks/G5/C5/no_guideline.py
+       8      4     96      1       8 get_random_trafo@171-178@benchmarks/G5/C5/no_guideline.py
+      25      4    253      3      25 transform_point@180-204@benchmarks/G5/C5/no_guideline.py
+       9      5     71      2       9 truncate@206-214@benchmarks/G5/C5/no_guideline.py
+      18      6    167      6      22 create_image_chaos@216-237@benchmarks/G5/C5/no_guideline.py
+      10      3     58      2      13 squareRoot@18-30@benchmarks/G5/C5/guideline.py
+       4      1     32      4       4 __init__@34-37@benchmarks/G5/C5/guideline.py
+       2      1     26      1       2 Mag@39-40@benchmarks/G5/C5/guideline.py
+       4      1     46      2       4 dist@42-45@benchmarks/G5/C5/guideline.py
+       5      2     59      2       5 __add__@47-51@benchmarks/G5/C5/guideline.py
+       2      1     14      2       2 __sub__@53-54@benchmarks/G5/C5/guideline.py
+       3      1     31      2       3 __mul__@56-58@benchmarks/G5/C5/guideline.py
+       7      2     65      4       7 linear_combination@61-67@benchmarks/G5/C5/guideline.py
+       2      1     21      1       2 __str__@69-70@benchmarks/G5/C5/guideline.py
+       2      1     21      1       2 __repr__@72-73@benchmarks/G5/C5/guideline.py
+      13      5     95      4      17 __init__@79-95@benchmarks/G5/C5/guideline.py
+       3      1     35      1       4 GetDomain@97-100@benchmarks/G5/C5/guideline.py
+      21      8    229      2      22 __call__@102-123@benchmarks/G5/C5/guideline.py
+       9      4     74      2       9 GetIndex@125-133@benchmarks/G5/C5/guideline.py
+       2      1     12      1       2 __len__@135-136@benchmarks/G5/C5/guideline.py
+       2      1     21      1       2 __repr__@138-139@benchmarks/G5/C5/guideline.py
+      13      3    110      2      14 write_ppm@142-155@benchmarks/G5/C5/guideline.py
+      21     11    230      3      21 __init__@160-180@benchmarks/G5/C5/guideline.py
+       8      4     96      1       8 get_random_trafo@182-189@benchmarks/G5/C5/guideline.py
+      25      4    253      3      25 transform_point@191-215@benchmarks/G5/C5/guideline.py
+       9      5     71      2       9 truncate@217-225@benchmarks/G5/C5/guideline.py
+      18      6    167      6      22 create_image_chaos@227-248@benchmarks/G5/C5/guideline.py
+      12      3    108      3      14 kClosest@10-23@benchmarks/G5/C2/no_guideline.py
+      12      3    105      3      14 kClosest@8-21@benchmarks/G5/C2/guideline.py
+20 file analyzed.
+==============================================================
+NLOC    Avg.NLOC  AvgCCN  Avg.token  function_cnt    file
+--------------------------------------------------------------
+      7       2.0     1.0       58.0         1     benchmarks/G5/C7/no_guideline.py
+     24       6.7     2.0       55.7         3     benchmarks/G5/C7/guideline.py
+      9       6.0     3.0       44.0         1     benchmarks/G5/C9/no_guideline.py
+     10       6.0     3.0       48.0         1     benchmarks/G5/C9/guideline.py
+     16       6.0     2.0       52.0         1     benchmarks/G5/C8/no_guideline.py
+     25       8.0     2.5       53.5         2     benchmarks/G5/C8/guideline.py
+     91      10.2     2.6      100.8         5     benchmarks/G5/C1/no_guideline.py
+     83      10.2     2.6      100.8         5     benchmarks/G5/C1/guideline.py
+     30       4.5     1.8       34.0         6     benchmarks/G5/C6/no_guideline.py
+     30       4.5     1.8       34.2         6     benchmarks/G5/C6/guideline.py
+     28       9.5     3.0       83.5         2     benchmarks/G5/C3/no_guideline.py
+     26       8.0     3.0       80.5         2     benchmarks/G5/C3/guideline.py
+     12       3.0     1.0       26.0         1     benchmarks/G5/C4/no_guideline.py
+     13       5.0     2.0       35.0         1     benchmarks/G5/C4/guideline.py
+     37      29.0     7.0      258.0         1     benchmarks/G5/C10/no_guideline.py
+     37      29.0     7.0      260.0         1     benchmarks/G5/C10/guideline.py
+    220       8.3     3.0       81.5        21     benchmarks/G5/C5/no_guideline.py
+    229       8.4     3.0       80.3        22     benchmarks/G5/C5/guideline.py
+     23      12.0     3.0      108.0         1     benchmarks/G5/C2/no_guideline.py
+     22      12.0     3.0      105.0         1     benchmarks/G5/C2/guideline.py
+
+===============================================================================================================
+No thresholds exceeded (cyclomatic_complexity > 15 or length > 1000 or nloc > 1000000 or parameter_count > 100)
+==========================================================================================
+Total nloc   Avg.NLOC  AvgCCN  Avg.token   Fun Cnt  Warning cnt   Fun Rt   nloc Rt
+------------------------------------------------------------------------------------------
+       972       8.3     2.8       77.3       84            0      0.00    0.00
