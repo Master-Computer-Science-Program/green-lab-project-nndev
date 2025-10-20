@@ -2,21 +2,24 @@
 
 ## Setup (Installations)
 ```{r, results='hide', message=FALSE}
-install.packages(c("tidyverse", "ggplot2", "bestNormalize", "ARTool", "lmerTest", "xtable"))
+install.packages(c("tidyverse", "ggplot2", "bestNormalize", "ARTool", "lmerTest", "xtable","effsize"))
 library(tidyverse)
 library(ggplot2)
 library(bestNormalize)
 library(ARTool)
 library(lmerTest)
 library(xtable)
+library(purrr)
+library(effsize)
 ```
+
 
 ## 1. Data Loading and Inspection
 
 ```{r}
-setwd("/Users/nhimai/Documents/MCs/Green-Lab/green-lab-project-nndev/data-analysis")
-dat_data <- read.csv("../benchmarks/experiments/run_table.csv") %>%
-  select(guideline, code, treatment, run_number, cpu_usage, execution_time, cpu_usage, memory_usage) %>%
+setwd("/Users/nhattran146/Documents/Master - CS/Green Lab/green-lab-project-nndev/data-analysis")
+dat_data <- read.csv("../benchmarks/experiments/python_guidelines_20251015_195439/run_table.csv") %>%
+  select(guideline, code, treatment, run_number, cpu_usage, execution_time, cpu_usage, cpu_usage) %>%
   mutate(
     guideline = factor(guideline),
     code = factor(code),
@@ -25,7 +28,7 @@ dat_data <- read.csv("../benchmarks/experiments/run_table.csv") %>%
   )
 
 dat_data <- dat_data %>%
-  filter(!is.na(cpu_usage) & !is.na(guideline) & !is.na(treatment))
+  dplyr::filter(!is.na(cpu_usage) & !is.na(guideline) & !is.na(treatment))
 
 glimpse(dat_data)
 summary(dat_data)
@@ -39,21 +42,20 @@ head(dat_data)
 ### 2.1.1. Overall
 
 ```{r}
-p <- ggplot(dat_data, aes(x = cpu_usage)) +
+ggplot(dat_data, aes(x = cpu_usage)) +
   geom_histogram(bins = 30, fill = "skyblue", color = "black", alpha = 0.7) +
+  facet_wrap(~ guideline, scales = "free_x") +
   theme_minimal() +
   labs(
     title = "Histogram of CPU Usage",
     x = "CPU Usage",
     y = "Frequency"
   )
-
-ggsave("figures/cpu_usage_histogram.png", plot = p, width = 8, height = 6, dpi = 300)
 ```
 
 #### 2.1.2. Split by treatment
 ```{r}
-p <- ggplot(dat_data, aes(x = cpu_usage, fill = treatment)) +
+ggplot(dat_data, aes(x = cpu_usage, fill = treatment)) +
   geom_histogram(bins = 30, alpha = 0.6, position = "identity") +
   facet_wrap(~ guideline, scales = "free_x") +
   theme_minimal() +
@@ -63,14 +65,11 @@ p <- ggplot(dat_data, aes(x = cpu_usage, fill = treatment)) +
     y = "Frequency",
     fill = "Treatment"
   )
-
-
-ggsave("figures/cpu_usage_histogram_by_treatment.png", plot = p, width = 8, height = 6, dpi = 300)
 ```
 
 ### 2.2. Box plot of cpu_usage grouped by treatment and guideline
 ```{r}
-p <- ggplot(dat_data, aes(x = treatment, y = cpu_usage, fill=guideline)) +
+ggplot(dat_data, aes(x = treatment, y = cpu_usage, fill=guideline)) +
   geom_boxplot(alpha = 0.7) +
   theme_minimal() +
   labs(
@@ -79,9 +78,6 @@ p <- ggplot(dat_data, aes(x = treatment, y = cpu_usage, fill=guideline)) +
     y = "CPU Usage",
     fill = "Guideline"
   )
-
-
-ggsave("figures/cpu_usage_box_plot.png", plot = p, width = 8, height = 6, dpi = 300)
 ```
 
 #### 2.3. Scatterplots of cpu_usage across trials: define "experiment" as guideline + treatment
@@ -89,22 +85,56 @@ ggsave("figures/cpu_usage_box_plot.png", plot = p, width = 8, height = 6, dpi = 
 dat_data <- dat_data %>%
   mutate(
     experiment = interaction(guideline, treatment),
-    run_number = factor(run_number, levels = paste0("r", 1:20), ordered = TRUE)
+    run_number = factor(run_number, levels = paste0("r", 1:15), ordered = TRUE)
     )
 
-p <- ggplot(dat_data, aes(x = run_number, y = cpu_usage, color = experiment)) +
+ggplot(dat_data, aes(x = run_number, y = cpu_usage, color = experiment)) +
+  facet_wrap(~ guideline, scales = "free_x") +
   geom_point(alpha = 0.8, size = 2) +
   theme_minimal() +
   labs(
-    title = "CPU Usage Across Runs",
+    title = "CPU Usage Across Runs (by Treatment)",
     x = "Run Number",
     y = "CPU Usage",
     color = "Experiment"
   )
-
-ggsave("figures/cpu_usage_scatterplot.png", plot = p, width = 8, height = 6, dpi = 300)
 ```
 
+#### 2.3.2 Scatterplots of cpu_usage across trials (by code)
+```{r}
+dat_data <- dat_data %>%
+  mutate(
+    experiment = interaction(guideline, treatment),
+    run_number = factor(run_number, levels = paste0("r", 1:15), ordered = TRUE)
+    )
+
+ggplot(dat_data, aes(x = run_number, y = cpu_usage, color = code)) +
+  facet_wrap(~ guideline, scales = "free_x") +
+  geom_point(alpha = 0.8, size = 2) +
+  theme_minimal() +
+  labs(
+    title = "CPU Usage Across Runs (by Code)",
+    x = "Run Number",
+    y = "CPU Usage",
+    color = "code"
+  )
+```
+
+
+#### 2.4 Mean and Standard Deviation
+```{r}
+dat_summary <- dat_data %>%
+  group_by(guideline, treatment) %>%
+  summarise(
+    mean_cpu = mean(cpu_usage, na.rm = TRUE),
+    sd_cpu = sd(cpu_usage, na.rm = TRUE),
+  ) %>%
+  mutate(
+    cpu_summary = sprintf("%.2f ± %.2f", mean_cpu, sd_cpu),
+  )
+
+print(dat_summary)
+```
 
 ## 3. Data Normality and Normalization
 
@@ -172,26 +202,32 @@ wilcox.test(all_no_guideline_j, all_guideline_j)
 # wilcox.test(g1_no_guideline, g1_guideline)
 ```
 
-#### Compare different treatments in terms of guidelines
+#### Wilcoxon test with effect size (Cliff's Delta)
 ```{r}
 guidelines <- unique(dat_data$guideline)
-wilcox_results <- map_dfr(guidelines, function(g) {
-  subset_data <- dat_data %>% filter(guideline == g)
+wilcox_results_effsize <- map_dfr(guidelines, function(g) {
+  subset_data <- dat_data %>% dplyr::filter(guideline == g)
   
-  no_guideline_j <- subset_data %>% filter(treatment == "no_guideline") %>% pull(cpu_usage)
-  guideline_j     <- subset_data %>% filter(treatment == "guideline") %>% pull(cpu_usage)
+  no_guideline_j <- subset_data %>% dplyr::filter(treatment == "no_guideline") %>% pull(cpu_usage)
+  guideline_j     <- subset_data %>% dplyr::filter(treatment == "guideline") %>% pull(cpu_usage)
   
+  #Wilcoxon test
   test_result <- wilcox.test(no_guideline_j, guideline_j)
+
+  # Cliff's Delta
+  cliff_result <- cliff.delta(guideline_j, no_guideline_j) #Percentage of comparision in which the differnce occurs (e.g. 65.8% of treatments compared, guideline ver use less cpu)
   
   tibble(
     guideline = g,
     p_value = test_result$p.value,
-    statistic = test_result$statistic,
-    method = test_result$method
+    W_statistic = test_result$statistic,
+    cliffs_delta = cliff_result$estimate,
+    delta_magnitude = cliff_result$magnitude,
+    mean_diff_pct = ((mean(guideline_j) - mean(no_guideline_j)) / mean(no_guideline_j)) * 100 #Avg percent change
   )
 })
 
-print(wilcox_results)
+print(wilcox_results_effsize)
 ```
 
 ### 4.2. ART (Aligned Rank Transform) model
@@ -237,11 +273,14 @@ ggplot(dat_data, aes(x = run_number, y = cpu_usage, color = guideline)) +
 ```
 
 ## 5.4. Scatter plot of cpu_usage vs execution_time, faceted by guideline, with trend lines
+
 ```{r}
-ggplot(dat_data, aes(x = execution_time, y = cpu_usage)) +
-  geom_point(aes(color = guideline), alpha = 0.6) +
-  geom_smooth(method = "lm", se = FALSE, color = "black") +
-  facet_wrap(~ guideline, ncol = 2, scales = "free") +
-  labs(x = "Execution Time", y = "CPU Usage", title = "CPU Usage vs Execution Time by Guideline") +
-  theme_minimal()
+list(
+    plot = ggplot(dat_data, aes(x = execution_time, y = cpu_usage)) +
+      geom_point(aes(color = guideline), alpha = 0.6) +
+      geom_smooth(method = "lm", se = FALSE, color = "black") +
+      facet_wrap(~ guideline, ncol = 2, scales = "free") +
+      labs(x = "Execution Time", y = "CPU Usage", title = "CPU Usage vs Execution Time by Guideline") +
+      theme_minimal(),
+  )
 ```

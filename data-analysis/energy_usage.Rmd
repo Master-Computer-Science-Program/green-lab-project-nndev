@@ -2,20 +2,22 @@
 
 ## Setup (Installations)
 ```{r, results='hide', message=FALSE}
-install.packages(c("tidyverse", "ggplot2", "bestNormalize", "ARTool", "lmerTest", "xtable"))
+install.packages(c("tidyverse", "ggplot2", "bestNormalize", "ARTool", "lmerTest", "xtable","effsize"))
 library(tidyverse)
 library(ggplot2)
 library(bestNormalize)
 library(ARTool)
 library(lmerTest)
 library(xtable)
+library(purrr)
+library(effsize)
 ```
 
 ## 1. Data Loading and Inspection
 
 ```{r}
-setwd("/Users/nhimai/Documents/MCs/Green-Lab/green-lab-project-nndev/data-analysis")
-dat_data <- read.csv("../benchmarks/experiments/run_table.csv") %>%
+setwd("/Users/nhattran146/Documents/Master - CS/Green Lab/green-lab-project-nndev/data-analysis")
+dat_data <- read.csv("../benchmarks/experiments/python_guidelines_20251015_195439/run_table.csv") %>%
   select(guideline, code, treatment, run_number, energy_usage, execution_time, cpu_usage, memory_usage) %>%
   mutate(
     guideline = factor(guideline),
@@ -25,7 +27,7 @@ dat_data <- read.csv("../benchmarks/experiments/run_table.csv") %>%
   )
 
 dat_data <- dat_data %>%
-  filter(!is.na(energy_usage) & !is.na(guideline) & !is.na(treatment))
+  dplyr::filter(!is.na(energy_usage) & !is.na(guideline) & !is.na(treatment))
 
 glimpse(dat_data)
 summary(dat_data)
@@ -39,7 +41,7 @@ head(dat_data)
 ### 2.1.1. Overall
 
 ```{r}
-p <- ggplot(dat_data, aes(x = energy_usage)) +
+ggplot(dat_data, aes(x = energy_usage)) +
   geom_histogram(bins = 30, fill = "skyblue", color = "black", alpha = 0.7) +
   theme_minimal() +
   labs(
@@ -47,13 +49,11 @@ p <- ggplot(dat_data, aes(x = energy_usage)) +
     x = "Energy Usage",
     y = "Frequency"
   )
-
-ggsave("figures/energy_usage_histogram.png", plot = p, width = 8, height = 6, dpi = 300)
 ```
 
 #### 2.1.2. Split by treatment
 ```{r}
-p <- ggplot(dat_data, aes(x = energy_usage, fill = treatment)) +
+ggplot(dat_data, aes(x = energy_usage, fill = treatment)) +
   geom_histogram(bins = 30, alpha = 0.6, position = "identity") +
   facet_wrap(~ guideline, scales = "free_x") +
   theme_minimal() +
@@ -63,15 +63,12 @@ p <- ggplot(dat_data, aes(x = energy_usage, fill = treatment)) +
     y = "Frequency",
     fill = "Treatment"
   )
-
-
-ggsave("figures/energy_usage_histogram_by_treatment.png", plot = p, width = 8, height = 6, dpi = 300)
 ```
 
 ### 2.2. Box plot of energy_usage grouped by treatment and guideline
 ```{r}
-p <- ggplot(dat_data, aes(x = treatment, y = energy_usage, fill=guideline)) +
-  geom_boxplot(alpha = 0.7) +
+ggplot(dat_data, aes(x = treatment, y = energy_usage, fill = guideline)) +
+  geom_boxplot(alpha = 0.7) + 
   theme_minimal() +
   labs(
     title = "Energy Usage by Treatment",
@@ -80,8 +77,6 @@ p <- ggplot(dat_data, aes(x = treatment, y = energy_usage, fill=guideline)) +
     fill = "Guideline"
   )
 
-
-ggsave("figures/energy_usage_box_plot.png", plot = p, width = 8, height = 6, dpi = 300)
 ```
 
 #### 2.3. Scatterplots of energy_usage across trials: define "experiment" as guideline + treatment
@@ -89,10 +84,11 @@ ggsave("figures/energy_usage_box_plot.png", plot = p, width = 8, height = 6, dpi
 dat_data <- dat_data %>%
   mutate(
     experiment = interaction(guideline, treatment),
-    run_number = factor(run_number, levels = paste0("r", 1:20), ordered = TRUE)
+    run_number = factor(run_number, levels = paste0("r", 1:15), ordered = TRUE)
     )
 
-p <- ggplot(dat_data, aes(x = run_number, y = energy_usage, color = experiment)) +
+ggplot(dat_data, aes(x = run_number, y = energy_usage, color = experiment)) +
+  facet_wrap(~ guideline, scales = "free_x") +
   geom_point(alpha = 0.8, size = 2) +
   theme_minimal() +
   labs(
@@ -101,10 +97,36 @@ p <- ggplot(dat_data, aes(x = run_number, y = energy_usage, color = experiment))
     y = "Energy Usage",
     color = "Experiment"
   )
-
-ggsave("figures/energy_usage_scatterplot.png", plot = p, width = 8, height = 6, dpi = 300)
 ```
 
+#### 2.3.2 Scatterplots of energy_usage across trials (by code)
+```{r}
+dat_data <- dat_data %>%
+  mutate(
+    experiment = interaction(guideline, treatment),
+    run_number = factor(run_number, levels = paste0("r", 1:15), ordered = TRUE)
+    )
+
+ggplot(dat_data, aes(x = run_number, y = energy_usage, color = code)) +
+  facet_wrap(~ guideline, scales = "free_x") +
+  geom_point(alpha = 0.8, size = 2) +
+  theme_minimal() +
+  labs(
+    title = "Energy Usage Across Runs",
+    x = "Run Number",
+    y = "Energy Usage",
+    color = "code"
+  )
+```
+
+#### 2.4 Mean and Standard Deviation
+
+```{r}
+ggplot(dat_data, aes(x = treatment, y = energy_usage, fill=guideline)) + 
+  geom_boxplot(alpha = 0.7) + 
+  theme_minimal() + 
+  labs( title = "Energy Usage by Treatment", x = "Treatment", y = "Energy Usage", fill = "Guideline" )
+```
 
 ## 3. Data Normality and Normalization
 
@@ -176,10 +198,10 @@ wilcox.test(all_no_guideline_j, all_guideline_j)
 ```{r}
 guidelines <- unique(dat_data$guideline)
 wilcox_results <- map_dfr(guidelines, function(g) {
-  subset_data <- dat_data %>% filter(guideline == g)
+  subset_data <- dat_data %>% dplyr::filter(guideline == g)
   
-  no_guideline_j <- subset_data %>% filter(treatment == "no_guideline") %>% pull(energy_usage)
-  guideline_j     <- subset_data %>% filter(treatment == "guideline") %>% pull(energy_usage)
+  no_guideline_j <- subset_data %>% dplyr::filter(treatment == "no_guideline") %>% pull(energy_usage)
+  guideline_j     <- subset_data %>% dplyr::filter(treatment == "guideline") %>% pull(energy_usage)
   
   test_result <- wilcox.test(no_guideline_j, guideline_j)
   
@@ -192,6 +214,34 @@ wilcox_results <- map_dfr(guidelines, function(g) {
 })
 
 print(wilcox_results)
+```
+
+#### Wilcoxon test with effect size (Cliff's Detal)
+```{r}
+guidelines <- unique(dat_data$guideline)
+wilcox_results_effsize <- map_dfr(guidelines, function(g) {
+  subset_data <- dat_data %>% dplyr::filter(guideline == g)
+  
+  no_guideline_j <- subset_data %>% dplyr::filter(treatment == "no_guideline") %>% pull(energy_usage)
+  guideline_j     <- subset_data %>% dplyr::filter(treatment == "guideline") %>% pull(energy_usage)
+  
+  #Wilcoxon test
+  test_result <- wilcox.test(no_guideline_j, guideline_j)
+
+  # Cliff's Delta
+  cliff_result <- cliff.delta(guideline_j, no_guideline_j) #Percentage of comparision in which the differnce occurs (e.g. 65.8% of treatments compared, guideline ver use less energy)
+  
+  tibble(
+    guideline = g,
+    p_value = test_result$p.value,
+    W_statistic = test_result$statistic,
+    cliffs_delta = cliff_result$estimate,
+    delta_magnitude = cliff_result$magnitude,
+    mean_diff_pct = ((mean(guideline_j) - mean(no_guideline_j)) / mean(no_guideline_j)) * 100 #Avg percent change
+  )
+})
+
+print(wilcox_results_effsize)
 ```
 
 ### 4.2. ART (Aligned Rank Transform) model
