@@ -16,8 +16,8 @@ library(effsize)
 ## 1. Data Loading and Inspection
 
 ```{r}
-setwd("/Users/nhattran146/Documents/Master - CS/Green Lab/green-lab-project-nndev/data-analysis")
-dat_data <- read.csv("../benchmarks/experiments/python_guidelines_20251015_195439/run_table.csv") %>%
+setwd("C:/Users/DELL/Documents/GitHub/green-lab-project-nndev/data-analysis")
+dat_data <- read.csv("../benchmarks/experiments/run_table.csv") %>%
   select(guideline, code, treatment, run_number, energy_usage, execution_time, cpu_usage, memory_usage) %>%
   mutate(
     guideline = factor(guideline),

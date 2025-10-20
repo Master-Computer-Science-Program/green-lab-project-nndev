@@ -17,8 +17,8 @@ library(effsize)
 ## 1. Data Loading and Inspection
 
 ```{r}
-setwd("/Users/nhattran146/Documents/Master - CS/Green Lab/green-lab-project-nndev/data-analysis")
-dat_data <- read.csv("../benchmarks/experiments/python_guidelines_20251015_195439/run_table.csv") %>%
+setwd("C:/Users/DELL/Documents/GitHub/green-lab-project-nndev/data-analysis")
+dat_data <- read.csv("../benchmarks/experiments/run_table.csv") %>%
   select(guideline, code, treatment, run_number, cpu_usage, execution_time, cpu_usage, cpu_usage) %>%
   mutate(
     guideline = factor(guideline),
@@ -201,6 +201,30 @@ wilcox.test(all_no_guideline_j, all_guideline_j)
 # g1_guideline = dat_data[dat_data$treatment == 'guideline' & dat_data$guideline == 'G1',]$cpu_usage
 # wilcox.test(g1_no_guideline, g1_guideline)
 ```
+
+
+```{r}
+guidelines <- unique(dat_data$guideline)
+wilcox_results <- map_dfr(guidelines, function(g) {
+  subset_data <- dat_data %>% dplyr::filter(guideline == g)
+  
+  no_guideline_j <- subset_data %>% dplyr::filter(treatment == "no_guideline") %>% pull(cpu_usage)
+  guideline_j     <- subset_data %>% dplyr::filter(treatment == "guideline") %>% pull(cpu_usage)
+  
+  test_result <- wilcox.test(no_guideline_j, guideline_j)
+  
+  tibble(
+    guideline = g,
+    p_value = test_result$p.value,
+    statistic = test_result$statistic,
+    method = test_result$method
+  )
+})
+
+print(wilcox_results)
+```
+
+
 
 #### Wilcoxon test with effect size (Cliff's Delta)
 ```{r}
