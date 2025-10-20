@@ -1,0 +1,814 @@
+# An Empirical Study on the Energy Usage and Performance of Python code using Python Energy Efficiency Guidelines -- NNDEV
+
+## Setup (Installations)
+```{r, results='hide', message=FALSE}
+install.packages(c("tidyverse", "ggplot2", "bestNormalize", "ARTool", "lmerTest", "xtable","effsize"))
+library(tidyverse)
+library(ggplot2)
+library(bestNormalize)
+library(ARTool)
+library(lmerTest)
+library(xtable)
+library(purrr)
+library(effsize)
+```
+
+## 1. Data Loading and Inspection
+
+```{r}
+# Set the absolute path of the project directory
+setwd("/Users/ntd432/Desktop/SE4GD/VU/GreenLab/project/green-lab-project-nndev")
+dat_data <- read.csv("benchmarks/experiments/run_table.csv") %>%
+  select(guideline, code, treatment, run_number, energy_usage, execution_time, cpu_usage, memory_usage) %>%
+  mutate(
+    guideline = factor(guideline),
+    code = factor(code),
+    treatment = factor(treatment),
+    run_number = factor(run_number)
+  )
+
+dat_data <- dat_data %>%
+  dplyr::filter(!is.na(energy_usage) & !is.na(cpu_usage) & !is.na(memory_usage) & !is.na(execution_time) & !is.na(guideline) & !is.na(treatment))
+
+glimpse(dat_data)
+summary(dat_data)
+head(dat_data)
+```
+
+## 2. Visual Exploration via Plotting
+
+### 2.1. Histograms
+
+#### 2.1.1. Overall
+
+```{r}
+ggplot(dat_data, aes(x = energy_usage)) +
+  geom_histogram(bins = 30, fill = "skyblue", color = "black", alpha = 0.7) +
+  facet_wrap(~ guideline, scales = "free_x") +
+  theme_minimal() +
+  labs(
+    title = "Histogram of Energy Usage",
+    x = "Energy Usage",
+    y = "Frequency"
+  )
+```
+
+```{r}
+ggplot(dat_data, aes(x = cpu_usage)) +
+  geom_histogram(bins = 30, fill = "skyblue", color = "black", alpha = 0.7) +
+  facet_wrap(~ guideline, scales = "free_x") +
+  theme_minimal() +
+  labs(
+    title = "Histogram of CPU Usage",
+    x = "CPU Usage",
+    y = "Frequency"
+  )
+```
+
+```{r}
+ggplot(dat_data, aes(x = memory_usage)) +
+  geom_histogram(bins = 30, fill = "skyblue", color = "black", alpha = 0.7) +
+  facet_wrap(~ guideline, scales = "free_x") +
+  theme_minimal() +
+  labs(
+    title = "Histogram of Memory Usage",
+    x = "Memory Usage",
+    y = "Frequency"
+  )
+```
+
+```{r}
+ggplot(dat_data, aes(x = execution_time)) +
+  geom_histogram(bins = 30, fill = "skyblue", color = "black", alpha = 0.7) +
+  facet_wrap(~ guideline, scales = "free_x") +
+  theme_minimal() +
+  labs(
+    title = "Histogram of Execution Time",
+    x = "Execution Time",
+    y = "Frequency"
+  )
+```
+
+#### 2.1.2. Split by treatment
+
+```{r}
+ggplot(dat_data, aes(x = energy_usage, fill = treatment)) +
+  geom_histogram(bins = 30, alpha = 0.6, position = "identity") +
+  facet_wrap(~ guideline, scales = "free_x") +
+  theme_minimal() +
+  labs(
+    title = "Energy Usage Distribution by Treatment",
+    x = "Energy Usage",
+    y = "Frequency",
+    fill = "Treatment"
+  )
+```
+
+```{r}
+ggplot(dat_data, aes(x = cpu_usage, fill = treatment)) +
+  geom_histogram(bins = 30, alpha = 0.6, position = "identity") +
+  facet_wrap(~ guideline, scales = "free_x") +
+  theme_minimal() +
+  labs(
+    title = "CPU Usage Distribution by Treatment",
+    x = "CPU Usage",
+    y = "Frequency",
+    fill = "Treatment"
+  )
+```
+
+```{r}
+ggplot(dat_data, aes(x = memory_usage, fill = treatment)) +
+  geom_histogram(bins = 30, alpha = 0.6, position = "identity") +
+  facet_wrap(~ guideline, scales = "free_x") +
+  theme_minimal() +
+  labs(
+    title = "Memory Usage Distribution by Treatment",
+    x = "Memory Usage",
+    y = "Frequency",
+    fill = "Treatment"
+  )
+```
+
+```{r}
+ggplot(dat_data, aes(x = execution_time, fill = treatment)) +
+  geom_histogram(bins = 30, alpha = 0.6, position = "identity") +
+  facet_wrap(~ guideline, scales = "free_x") +
+  theme_minimal() +
+  labs(
+    title = "Execution Time Distribution by Treatment",
+    x = "Execution Time",
+    y = "Frequency",
+    fill = "Treatment"
+  )
+```
+
+### 2.2. Box plot grouped by treatment and guideline
+
+```{r}
+ggplot(dat_data, aes(x = treatment, y = energy_usage, fill = guideline)) +
+  geom_boxplot(alpha = 0.7) + 
+  theme_minimal() +
+  labs(
+    title = "Energy Usage by Treatment",
+    x = "Treatment",
+    y = "Energy Usage",
+    fill = "Guideline"
+  )
+
+```
+
+```{r}
+ggplot(dat_data, aes(x = treatment, y = cpu_usage, fill=guideline)) +
+  geom_boxplot(alpha = 0.7) +
+  theme_minimal() +
+  labs(
+    title = "CPU Usage by Treatment",
+    x = "Treatment",
+    y = "CPU Usage",
+    fill = "Guideline"
+  )
+```
+
+```{r}
+ggplot(dat_data, aes(x = treatment, y = memory_usage, fill=guideline)) +
+  geom_boxplot(alpha = 0.7) +
+  theme_minimal() +
+  labs(
+    title = "Memory Usage by Treatment",
+    x = "Treatment",
+    y = "Memory Usage",
+    fill = "Guideline"
+  )
+```
+
+```{r}
+ggplot(dat_data, aes(x = treatment, y = execution_time, fill=guideline)) +
+  geom_boxplot(alpha = 0.7) +
+  theme_minimal() +
+  labs(
+    title = "Execution Time by Treatment",
+    x = "Treatment",
+    y = "Execution Time",
+    fill = "Guideline"
+  )
+```
+
+### 2.3 Scatterplots
+#### 2.3.1. Scatterplots across trials: define "experiment" as guideline + treatment
+
+```{r}
+dat_data <- dat_data %>%
+  mutate(
+    experiment = interaction(guideline, treatment),
+    run_number = factor(run_number, levels = paste0("r", 1:20), ordered = TRUE)
+    )
+
+ggplot(dat_data, aes(x = run_number, y = energy_usage, color = experiment)) +
+  facet_wrap(~ guideline, scales = "free_x") +
+  geom_point(alpha = 0.8, size = 2) +
+  theme_minimal() +
+  labs(
+    title = "Energy Usage Across Runs (by Treatment)",
+    x = "Run Number",
+    y = "Energy Usage",
+    color = "Experiment"
+  )
+```
+
+```{r}
+dat_data <- dat_data %>%
+  mutate(
+    experiment = interaction(guideline, treatment),
+    run_number = factor(run_number, levels = paste0("r", 1:20), ordered = TRUE)
+    )
+
+ggplot(dat_data, aes(x = run_number, y = cpu_usage, color = experiment)) +
+  facet_wrap(~ guideline, scales = "free_x") +
+  geom_point(alpha = 0.8, size = 2) +
+  theme_minimal() +
+  labs(
+    title = "CPU Usage Across Runs (by Treatment)",
+    x = "Run Number",
+    y = "CPU Usage",
+    color = "Experiment"
+  )
+```
+
+```{r}
+dat_data <- dat_data %>%
+  mutate(
+    experiment = interaction(guideline, treatment),
+    run_number = factor(run_number, levels = paste0("r", 1:20), ordered = TRUE)
+    )
+
+ggplot(dat_data, aes(x = run_number, y = memory_usage, color = experiment)) +
+  facet_wrap(~ guideline, scales = "free_x") +
+  geom_point(alpha = 0.8, size = 2) +
+  theme_minimal() +
+  labs(
+    title = "Memory Usage Across Runs (by Treatment)",
+    x = "Run Number",
+    y = "Memory Usage",
+    color = "Experiment"
+  )
+```
+
+```{r}
+dat_data <- dat_data %>%
+  mutate(
+    experiment = interaction(guideline, treatment),
+    run_number = factor(run_number, levels = paste0("r", 1:20), ordered = TRUE)
+    )
+
+ggplot(dat_data, aes(x = run_number, y = execution_time, color = experiment)) +
+  facet_wrap(~ guideline, scales = "free_x") +
+  geom_point(alpha = 0.8, size = 2) +
+  theme_minimal() +
+  labs(
+    title = "Execution Time Across Runs (by Treatment)",
+    x = "Run Number",
+    y = "Execution Time",
+    color = "Experiment"
+  )
+```
+
+#### 2.3.2 Scatterplots across trials (by code)
+```{r}
+dat_data <- dat_data %>%
+  mutate(
+    experiment = interaction(guideline, treatment),
+    run_number = factor(run_number, levels = paste0("r", 1:20), ordered = TRUE)
+    )
+
+ggplot(dat_data, aes(x = run_number, y = energy_usage, color = code)) +
+  facet_wrap(~ guideline, scales = "free_x") +
+  geom_point(alpha = 0.8, size = 2) +
+  theme_minimal() +
+  labs(
+    title = "Energy Usage Across Runs (by code)",
+    x = "Run Number",
+    y = "Energy Usage",
+    color = "code"
+  )
+```
+
+```{r}
+dat_data <- dat_data %>%
+  mutate(
+    experiment = interaction(guideline, treatment),
+    run_number = factor(run_number, levels = paste0("r", 1:20), ordered = TRUE)
+    )
+
+ggplot(dat_data, aes(x = run_number, y = cpu_usage, color = code)) +
+  facet_wrap(~ guideline, scales = "free_x") +
+  geom_point(alpha = 0.8, size = 2) +
+  theme_minimal() +
+  labs(
+    title = "CPU Usage Across Runs (by Code)",
+    x = "Run Number",
+    y = "CPU Usage",
+    color = "code"
+  )
+```
+
+```{r}
+dat_data <- dat_data %>%
+  mutate(
+    experiment = interaction(guideline, treatment),
+    run_number = factor(run_number, levels = paste0("r", 1:20), ordered = TRUE)
+    )
+
+ggplot(dat_data, aes(x = run_number, y = memory_usage, color = code)) +
+  facet_wrap(~ guideline, scales = "free_x") +
+  geom_point(alpha = 0.8, size = 2) +
+  theme_minimal() +
+  labs(
+    title = "Memory Usage Across Runs",
+    x = "Run Number",
+    y = "Memory Usage",
+    color = "code"
+  )
+```
+
+```{r}
+dat_data <- dat_data %>%
+  mutate(
+    experiment = interaction(guideline, treatment),
+    run_number = factor(run_number, levels = paste0("r", 1:20), ordered = TRUE)
+    )
+
+ggplot(dat_data, aes(x = run_number, y = execution_time, color = code)) +
+  facet_wrap(~ guideline, scales = "free_x") +
+  geom_point(alpha = 0.8, size = 2) +
+  theme_minimal() +
+  labs(
+    title = "Execution Time Across Runs",
+    x = "Run Number",
+    y = "Execution Time",
+    color = "code"
+  )
+```
+
+### 2.4 Mean and Standard Deviation
+
+```{r}
+dat_summary <- dat_data %>%
+  group_by(guideline, treatment) %>%
+  summarise(
+    mean_energy = mean(energy_usage, na.rm = TRUE),
+    sd_energy = sd(energy_usage, na.rm = TRUE),
+  ) %>%
+  mutate(
+    energy_summary = sprintf("%.2f ± %.2f", mean_energy, sd_energy),
+  )
+
+print(dat_summary)
+```
+
+```{r}
+dat_summary <- dat_data %>%
+  group_by(guideline, treatment) %>%
+  summarise(
+    mean_cpu = mean(cpu_usage, na.rm = TRUE),
+    sd_cpu = sd(cpu_usage, na.rm = TRUE),
+  ) %>%
+  mutate(
+    cpu_summary = sprintf("%.2f ± %.2f", mean_cpu, sd_cpu),
+  )
+
+print(dat_summary)
+```
+
+```{r}
+dat_summary <- dat_data %>%
+  group_by(guideline, treatment) %>%
+  summarise(
+    mean_memory = mean(memory_usage, na.rm = TRUE),
+    sd_memory = sd(memory_usage, na.rm = TRUE),
+  ) %>%
+  mutate(
+    memory_summary = sprintf("%.2f ± %.2f", mean_memory, sd_memory),
+  )
+
+print(dat_summary)
+```
+
+```{r}
+dat_summary <- dat_data %>%
+  group_by(guideline, treatment) %>%
+  summarise(
+    mean_runTime = mean(execution_time, na.rm = TRUE),
+    sd_runTime = sd(execution_time, na.rm = TRUE),
+  ) %>%
+  mutate(
+    runTime_summary = sprintf("%.2f ± %.2f", mean_runTime, sd_runTime),
+  )
+
+print(dat_summary)
+```
+
+## 3. Data Normality and Normalization
+
+### 3.1. Shapiro-Wilk test
+- Interpretation: if p < 0.05, reject normality (data is not normal).
+
+```{r}
+# Run Shapiro-Wilk for each group
+normality_results <- dat_data %>%
+  group_by(guideline, treatment) %>%
+  summarise(
+    shapiro_p = shapiro.test(energy_usage)$p.value,
+    .groups = "drop"
+  )
+
+normality_results
+```
+
+```{r}
+# Run Shapiro-Wilk for each group
+normality_results <- dat_data %>%
+  group_by(guideline, treatment) %>%
+  summarise(
+    shapiro_p = shapiro.test(cpu_usage)$p.value,
+    .groups = "drop"
+  )
+
+normality_results
+```
+
+```{r}
+# Run Shapiro-Wilk for each group
+normality_results <- dat_data %>%
+  group_by(guideline, treatment) %>%
+  summarise(
+    shapiro_p = shapiro.test(memory_usage)$p.value,
+    .groups = "drop"
+  )
+
+normality_results
+```
+
+```{r}
+# Run Shapiro-Wilk for each group
+normality_results <- dat_data %>%
+  group_by(guideline, treatment) %>%
+  summarise(
+    shapiro_p = shapiro.test(execution_time)$p.value,
+    .groups = "drop"
+  )
+
+normality_results
+```
+
+### 3.2. Normalize data
+
+```{r}
+bn <- bestNormalize(dat_data$energy_usage)
+dat_data$norm_energy_usage <- bn$x.t
+```
+
+```{r}
+bn <- bestNormalize(dat_data$cpu_usage)
+dat_data$norm_cpu_usage <- bn$x.t
+```
+
+```{r}
+bn <- bestNormalize(dat_data$memory_usage)
+dat_data$norm_memory_usage <- bn$x.t
+```
+
+```{r}
+bn <- bestNormalize(dat_data$execution_time)
+dat_data$norm_execution_time <- bn$x.t
+```
+
+### 3.3. Visualization of normalized data and repeat normality tests
+
+```{r}
+ggplot(dat_data, aes(x = norm_energy_usage)) +
+  geom_histogram(bins = 30, fill = "lightgreen", color = "black") +
+  theme_minimal() +
+  labs(
+    title = "Histogram of Normalized Energy Usage",
+    x = "Normalized Energy Usage",
+    y = "Frequency"
+  )
+```
+
+```{r}
+ggplot(dat_data, aes(x = norm_cpu_usage)) +
+  geom_histogram(bins = 30, fill = "lightgreen", color = "black") +
+  theme_minimal() +
+  labs(
+    title = "Histogram of Normalized CPU Usage",
+    x = "Normalized CPU Usage",
+    y = "Frequency"
+  )
+```
+
+```{r}
+ggplot(dat_data, aes(x = norm_memory_usage)) +
+  geom_histogram(bins = 30, fill = "lightgreen", color = "black") +
+  theme_minimal() +
+  labs(
+    title = "Histogram of Normalized Memory Usage",
+    x = "Normalized Memory Usage",
+    y = "Frequency"
+  )
+```
+
+```{r}
+ggplot(dat_data, aes(x = norm_execution_time)) +
+  geom_histogram(bins = 30, fill = "lightgreen", color = "black") +
+  theme_minimal() +
+  labs(
+    title = "Histogram of Normalized Execution Time",
+    x = "Normalized Execution Time",
+    y = "Frequency"
+  )
+```
+
+#### 3.3.2. Shapiro-Wilk again for normalized values
+
+- If most *shapiro_p* values after normalization are greater than 0.05, then distributions can be considered normal, and parametric tests (t-test) are justified.
+- If many are still below 0.05, non-parametric test (Wilcoxon) will be the case.
+
+```{r}
+normality_results_norm <- dat_data %>%
+  group_by(guideline, treatment) %>%
+  summarise(
+    shapiro_p = shapiro.test(norm_energy_usage)$p.value,
+    .groups = "drop"
+  )
+
+normality_results_norm
+```
+
+```{r}
+normality_results_norm <- dat_data %>%
+  group_by(guideline, treatment) %>%
+  summarise(
+    shapiro_p = shapiro.test(norm_cpu_usage)$p.value,
+    .groups = "drop"
+  )
+
+normality_results_norm
+```
+
+```{r}
+normality_results_norm <- dat_data %>%
+  group_by(guideline, treatment) %>%
+  summarise(
+    shapiro_p = shapiro.test(norm_memory_usage)$p.value,
+    .groups = "drop"
+  )
+
+normality_results_norm
+```
+
+```{r}
+normality_results_norm <- dat_data %>%
+  group_by(guideline, treatment) %>%
+  summarise(
+    shapiro_p = shapiro.test(norm_execution_time)$p.value,
+    .groups = "drop"
+  )
+
+normality_results_norm
+```
+
+## 4. Non-parametric test - Wilcoxon’s test
+
+### 4.1. Compare entire set
+```{r, results='hide', message=FALSE}
+all_no_guideline_energy = dat_data[dat_data$treatment == 'no_guideline',]$energy_usage
+all_guideline_energy = dat_data[dat_data$treatment == 'guideline',]$energy_usage
+wilcox.test(all_no_guideline_energy, all_guideline_energy)
+```
+
+```{r, results='hide', message=FALSE}
+all_no_guideline_cpu = dat_data[dat_data$treatment == 'no_guideline',]$cpu_usage
+all_guideline_cpu = dat_data[dat_data$treatment == 'guideline',]$cpu_usage
+wilcox.test(all_no_guideline_cpu, all_guideline_cpu)
+```
+
+```{r, results='hide', message=FALSE}
+all_no_guideline_mem = dat_data[dat_data$treatment == 'no_guideline',]$memory_usage
+all_guideline_mem = dat_data[dat_data$treatment == 'guideline',]$memory_usage
+wilcox.test(all_no_guideline_mem, all_guideline_mem)
+```
+
+```{r, results='hide', message=FALSE}
+all_no_guideline_time = dat_data[dat_data$treatment == 'no_guideline',]$execution_time
+all_guideline_time = dat_data[dat_data$treatment == 'guideline',]$execution_time
+wilcox.test(all_no_guideline_time, all_guideline_time)
+```
+
+### 4.2. Compare different treatments in terms of guidelines, with Wilcoxon test with effect size (Cliff's Detal)
+```{r}
+guidelines <- unique(dat_data$guideline)
+wilcox_results <- map_dfr(guidelines, function(g) {
+  subset_data <- dat_data %>% dplyr::filter(guideline == g)
+  
+  no_guideline_energy <- subset_data %>% dplyr::filter(treatment == "no_guideline") %>% pull(energy_usage)
+  guideline_energy     <- subset_data %>% dplyr::filter(treatment == "guideline") %>% pull(energy_usage)
+  
+  #Wilcoxon test
+  test_result <- wilcox.test(no_guideline_energy, guideline_energy)
+  # Cliff's Delta
+  cliff_result <- cliff.delta(guideline_energy, no_guideline_energy)
+  
+  tibble(
+    guideline = g,
+    p_value = test_result$p.value,
+    W_statistic = test_result$statistic,
+    cliffs_delta = cliff_result$estimate,
+    delta_magnitude = cliff_result$magnitude,
+    mean_diff_pct = ((mean(guideline_energy) - mean(no_guideline_energy)) / mean(no_guideline_energy)) * 100 #Avg percent change
+  )
+})
+
+print(wilcox_results)
+```
+
+```{r}
+guidelines <- unique(dat_data$guideline)
+wilcox_results <- map_dfr(guidelines, function(g) {
+  subset_data <- dat_data %>% dplyr::filter(guideline == g)
+  
+  no_guideline_cpu <- subset_data %>% dplyr::filter(treatment == "no_guideline") %>% pull(cpu_usage)
+  guideline_cpu     <- subset_data %>% dplyr::filter(treatment == "guideline") %>% pull(cpu_usage)
+  
+  #Wilcoxon test
+  test_result <- wilcox.test(no_guideline_cpu, guideline_cpu)
+  # Cliff's Delta
+  cliff_result <- cliff.delta(guideline_cpu, no_guideline_cpu)
+  
+  tibble(
+    guideline = g,
+    p_value = test_result$p.value,
+    W_statistic = test_result$statistic,
+    cliffs_delta = cliff_result$estimate,
+    delta_magnitude = cliff_result$magnitude,
+    mean_diff_pct = ((mean(guideline_cpu) - mean(no_guideline_cpu)) / mean(no_guideline_cpu)) * 100 #Avg percent change
+  )
+})
+
+print(wilcox_results)
+```
+
+```{r}
+guidelines <- unique(dat_data$guideline)
+wilcox_results_effsize <- map_dfr(guidelines, function(g) {
+  subset_data <- dat_data %>% dplyr::filter(guideline == g)
+  
+  no_guideline_mem <- subset_data %>% dplyr::filter(treatment == "no_guideline") %>% pull(memory_usage)
+  guideline_mem     <- subset_data %>% dplyr::filter(treatment == "guideline") %>% pull(memory_usage)
+    
+  #Wilcoxon test
+  test_result <- wilcox.test(no_guideline_mem, guideline_mem)
+  # Cliff's Delta
+  cliff_result <- cliff.delta(guideline_mem, no_guideline_mem)
+  
+  tibble(
+    guideline = g,
+    p_value = test_result$p.value,
+    W_statistic = test_result$statistic,
+    cliffs_delta = cliff_result$estimate,
+    delta_magnitude = cliff_result$magnitude,
+    mean_diff_pct = ((mean(guideline_mem) - mean(no_guideline_mem)) / mean(no_guideline_mem)) * 100 #Avg percent change
+  )
+})
+
+print(wilcox_results_effsize)
+```
+
+```{r}
+guidelines <- unique(dat_data$guideline)
+wilcox_results_effsize <- map_dfr(guidelines, function(g) {
+  subset_data <- dat_data %>% dplyr::filter(guideline == g)
+  
+  no_guideline_time <- subset_data %>% dplyr::filter(treatment == "no_guideline") %>% pull(execution_time)
+  guideline_time     <- subset_data %>% dplyr::filter(treatment == "guideline") %>% pull(execution_time)
+  
+  #Wilcoxon test
+  test_result <- wilcox.test(no_guideline_time, guideline_time)
+
+  # Cliff's Delta
+  cliff_result <- cliff.delta(guideline_time, no_guideline_time)
+  
+  tibble(
+    guideline = g,
+    p_value = test_result$p.value,
+    W_statistic = test_result$statistic,
+    cliffs_delta = cliff_result$estimate,
+    delta_magnitude = cliff_result$magnitude,
+    mean_diff_pct = ((mean(guideline_time) - mean(no_guideline_time)) / mean(no_guideline_time)) * 100 #Avg percent change
+  )
+})
+
+print(wilcox_results_effsize)
+```
+
+## 5. Summary plot
+## 5.1. Boxplot by code, faceted by guideline
+
+```{r}
+ggplot(dat_data, aes(x = as.factor(code), y = energy_usage)) +
+  geom_boxplot(fill = "skyblue", color = "darkblue") +
+  facet_wrap(~ guideline, scales = "free") +
+  labs(x = "Code", y = "Energy Usage", title = "Energy Usage Distribution by Code") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+ggplot(dat_data, aes(x = as.factor(code), y = cpu_usage)) +
+  geom_boxplot(fill = "skyblue", color = "darkblue") +
+  facet_wrap(~ guideline, scales = "free") +
+  labs(x = "Code", y = "CPU Usage", title = "CPU Usage Distribution by Code") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+ggplot(dat_data, aes(x = as.factor(code), y = memory_usage)) +
+  geom_boxplot(fill = "skyblue", color = "darkblue") +
+  facet_wrap(~ guideline, scales = "free") +
+  labs(x = "Code", y = "Memory Usage", title = "Memory Usage Distribution by Code") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+ggplot(dat_data, aes(x = as.factor(code), y = execution_time)) +
+  geom_boxplot(fill = "skyblue", color = "darkblue") +
+  facet_wrap(~ guideline, scales = "free") +
+  labs(x = "Code", y = "Execution Time", title = "Execution Time Distribution by Code") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+## 5.2. Scatter plot of energy_usage over run_number, colored by guideline
+
+```{r}
+ggplot(dat_data, aes(x = run_number, y = energy_usage, color = guideline)) +
+  geom_point(alpha = 0.7, size = 2) +
+  labs(x = "Run Number", y = "Energy Usage", title = "Energy Usage over Run Number") +
+  theme_minimal() +
+  theme(legend.position = "right")
+```
+
+```{r}
+ggplot(dat_data, aes(x = run_number, y = cpu_usage, color = guideline)) +
+  geom_point(alpha = 0.7, size = 2) +
+  labs(x = "Run Number", y = "CPU Usage", title = "CPU Usage over Run Number") +
+  theme_minimal() +
+  theme(legend.position = "right")
+```
+
+```{r}
+ggplot(dat_data, aes(x = run_number, y = memory_usage, color = guideline)) +
+  geom_point(alpha = 0.7, size = 2) +
+  labs(x = "Run Number", y = "Memory Usage", title = "Memory Usage over Run Number") +
+  theme_minimal() +
+  theme(legend.position = "right")
+```
+
+```{r}
+ggplot(dat_data, aes(x = run_number, y = execution_time, color = guideline)) +
+  geom_point(alpha = 0.7, size = 2) +
+  labs(x = "Run Number", y = "Execution Time", title = "Execution Time over Run Number") +
+  theme_minimal() +
+  theme(legend.position = "right")
+```
+
+### 5.3. Further observation: Relationships with execution time
+
+```{r}
+ggplot(dat_data, aes(x = execution_time, y = energy_usage)) +
+  geom_point(aes(color = guideline), alpha = 0.6) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  facet_wrap(~ guideline, ncol = 2, scales = "free") +
+  labs(x = "Execution Time", y = "Energy Usage", title = "Energy Usage vs Execution Time by Guideline") +
+  theme_minimal()
+```
+
+```{r}
+ggplot(dat_data, aes(x = execution_time, y = cpu_usage)) +
+    geom_point(aes(color = guideline), alpha = 0.6) +
+    geom_smooth(method = "lm", se = FALSE, color = "black") +
+    facet_wrap(~ guideline, ncol = 2, scales = "free") +
+    labs(x = "Execution Time", y = "CPU Usage", title = "CPU Usage vs Execution Time by Guideline") +
+    theme_minimal()
+```
+
+```{r}
+ggplot(dat_data, aes(x = execution_time, y = memory_usage)) +
+  geom_point(aes(color = guideline), alpha = 0.6) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  facet_wrap(~ guideline, ncol = 2, scales = "free") +
+  labs(x = "Execution Time", y = "Memory Usage", title = "Memory Usage vs Execution Time by Guideline") +
+  theme_minimal()
+```

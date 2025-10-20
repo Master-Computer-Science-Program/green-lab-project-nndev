@@ -122,10 +122,17 @@ ggplot(dat_data, aes(x = run_number, y = energy_usage, color = code)) +
 #### 2.4 Mean and Standard Deviation
 
 ```{r}
-ggplot(dat_data, aes(x = treatment, y = energy_usage, fill=guideline)) + 
-  geom_boxplot(alpha = 0.7) + 
-  theme_minimal() + 
-  labs( title = "Energy Usage by Treatment", x = "Treatment", y = "Energy Usage", fill = "Guideline" )
+dat_summary <- dat_data %>%
+  group_by(guideline, treatment) %>%
+  summarise(
+    mean_energy = mean(energy_usage, na.rm = TRUE),
+    sd_energy = sd(energy_usage, na.rm = TRUE),
+  ) %>%
+  mutate(
+    energy_summary = sprintf("%.2f ± %.2f", mean_energy, sd_energy),
+  )
+
+print(dat_summary)
 ```
 
 ## 3. Data Normality and Normalization
