@@ -16,8 +16,8 @@ library(effsize)
 ## 1. Data Loading and Inspection
 
 ```{r}
-setwd("/Users/nhattran146/Documents/Master - CS/Green Lab/green-lab-project-nndev/data-analysis")
-dat_data <- read.csv("../benchmarks/experiments/python_guidelines_20251015_195439/run_table.csv") %>%
+setwd("C:/Users/DELL/Documents/GitHub/green-lab-project-nndev/data-analysis")
+dat_data <- read.csv("../benchmarks/experiments/run_table.csv") %>%
   select(guideline, code, treatment, run_number, execution_time, execution_time, cpu_usage, memory_usage) %>%
   mutate(
     guideline = factor(guideline),
@@ -206,8 +206,8 @@ guidelines <- unique(dat_data$guideline)
 wilcox_results_effsize <- map_dfr(guidelines, function(g) {
   subset_data <- dat_data %>% dplyr::filter(guideline == g)
   
-  no_guideline_j <- subset_data %>% dplyr::filter(treatment == "no_guideline") %>% pull(cpu_usage)
-  guideline_j     <- subset_data %>% dplyr::filter(treatment == "guideline") %>% pull(cpu_usage)
+  no_guideline_j <- subset_data %>% dplyr::filter(treatment == "no_guideline") %>% pull(execution_time)
+  guideline_j     <- subset_data %>% dplyr::filter(treatment == "guideline") %>% pull(execution_time)
   
   #Wilcoxon test
   test_result <- wilcox.test(no_guideline_j, guideline_j)
