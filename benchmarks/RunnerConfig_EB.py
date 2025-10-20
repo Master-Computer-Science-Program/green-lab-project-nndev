@@ -67,7 +67,7 @@ class RunnerConfig:
             factors=[factor1, factor2, factor3, factor4],
             repetitions = 1,
             data_columns=['execution_time', 'cpu_usage', 'memory_usage', 'average_power (Watts)', 'energy_usage'],
-            shuffle = False,
+            shuffle = True,
         )
         return self.run_table_model
 
