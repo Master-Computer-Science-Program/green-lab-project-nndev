@@ -60,12 +60,9 @@ class RunnerConfig:
         representing each run performed"""
         print()
         factor1 = FactorModel("guideline", ['G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G18', 'G19'])
-        # factor1 = FactorModel("guideline", ['G18'])
         factor2 = FactorModel("code", [f'C{i}' for i in range(1, 11)])
-        # factor2 = FactorModel("code", ['C1'])
         factor3 = FactorModel("treatment", ['guideline', 'no_guideline'])
-        factor4 = FactorModel("run_number", [f'r{i}' for i in range(1, 2)])
-        # factor5 = FactorModel("problem_size", [None])
+        factor4 = FactorModel("run_number", [f'r{i}' for i in range(1, 21)])
         self.run_table_model = RunTableModel(
             factors=[factor1, factor2, factor3, factor4],
             repetitions = 1,
@@ -93,7 +90,6 @@ class RunnerConfig:
     def start_measurement(self, context: RunnerContext) -> None:
         """Perform any activity required for starting measurements."""
         guideline = context.execute_run["guideline"]
-        # problem_size = context.execute_run["problem_size"]
         code = context.execute_run["code"]
         treatment = context.execute_run["treatment"]
         print(f"Starting measurement for {guideline}, {code}, {treatment}")
@@ -123,7 +119,6 @@ class RunnerConfig:
         
         eb_log, _ = self.profiler.parse_log(self.profiler.logfile, 
                                                      self.profiler.summary_logfile)
-        # cpu_usage = [max(eb_log[f"CPU_USAGE_{i}"].values()) for i in range(1, 8)]
 
         cpu_usage = [statistics.mean(filter(lambda x: not math.isnan(x), eb_log[f"CPU_USAGE_{i}"].values())) for i in range(1, 8)]
         execution_time = (self.timestamp_end - self.timestamp_start).total_seconds()
